@@ -295,4 +295,13 @@ def list_registry_categories() -> list[dict]:
 # ── Run ──────────────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
+    try:
+        from aioconnect import ensure_licensed, wrap_tools
+
+        ensure_licensed()
+        wrapped = wrap_tools(mcp)
+        if wrapped:
+            logger.info("aioconnect: wrapped %d tools", wrapped)
+    except ImportError:
+        pass  # adapter absent → run as plain upstream server
     mcp.run(transport="stdio")

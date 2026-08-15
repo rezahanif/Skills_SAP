@@ -1,5 +1,4 @@
-"""
-SAP2000 COM Bridge — Manages connection to a local SAP2000 instance via COM.
+"""SAP2000 COM Bridge — Manages connection to a local SAP2000 instance via COM.
 
 Supports two modes:
   - Launch a new SAP2000 instance (given a program path)
@@ -7,9 +6,12 @@ Supports two modes:
 
 All COM interaction is centralized here. Other modules use this bridge
 to obtain SapObject and SapModel references.
+
+Note: comtypes is imported lazily inside _create_helper() so the MCP server
+can start on non-Windows platforms (tools/list, registry, docs, sandbox all
+work headless); only connect_sap2000 requires real COM.
 """
 
-import comtypes.client
 import logging
 
 logger = logging.getLogger(__name__)
@@ -47,8 +49,15 @@ class SapBridge:
     # ------------------------------------------------------------------
 
     def _create_helper(self):
-        """Instantiate the SAP2000 COM helper once."""
+        """Instantiate the SAP2000 COM helper once.
+
+        comtypes is imported here (not at module top) so the server can run
+        headless on non-Windows platforms; COM is only required for
+        connect_sap2000.
+        """
         if self._helper is None:
+            import comtypes.client
+
             self._helper = comtypes.client.CreateObject("SAP2000v1.Helper")
 
     def connect(

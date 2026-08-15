@@ -314,3 +314,16 @@ El servidor expone 12 herramientas invocables desde Claude Code:
 ## Licencia
 
 Este proyecto está bajo la licencia MIT. Ver [LICENSE](LICENSE) para más detalles.
+
+---
+
+## AiConnect integration (adapter)
+
+This fork adds an AiConnect adapter without modifying upstream tool logic:
+
+- `mcp_server/aioconnect.py` — license gate (`ensure_licensed()` at startup + per-call recheck via `MCP_LICENSE_TOKEN`) and a central envelope wrap of all 12 registered tools (`{"success": true, "data": ...}` / `fail("LICENSE"|"TOOL_ERROR", ...)`). Enabled only when `AICONNECT_ENABLE=1`; otherwise the server runs as plain upstream.
+- `run_server.py` — entrypoint for the gateway bridge (`--cmd python3 run_server.py`); keeps `python -m mcp_server.server` working unchanged.
+- `manifest.json` — AiConnect manifest: `stdio: true`, `entitlement_tier: pro`, token via `MCP_LICENSE_TOKEN`, platform requirements (`windows` + `com`).
+- COM is imported lazily (`sap_bridge.py`) so the server starts headless on any platform — `tools/list`, `query_function_registry`, `run_sap_script` sandbox, `doc_search` all work; only `connect_sap2000` needs real SAP2000 + COM and returns a structured `TOOL_ERROR` envelope off-Windows.
+
+Upstream: https://github.com/fcocarrascob/Skills_SAP (commit `a882a15`), MIT license preserved verbatim (`LICENSE`).
