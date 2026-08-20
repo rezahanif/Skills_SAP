@@ -11,7 +11,13 @@ import logging
 import sys
 from pathlib import Path
 
-from mcp.server.fastmcp import FastMCP
+try:
+    from mcp.server.fastmcp import FastMCP
+except ImportError:
+    try:
+        from mcp_server.fastmcp_mini import FastMCP
+    except ImportError:
+        from fastmcp_mini import FastMCP
 
 # Add mcp_server directory to path so imports work from any cwd
 _mcp_server_dir = Path(__file__).parent
