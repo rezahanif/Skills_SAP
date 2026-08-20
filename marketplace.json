@@ -1,0 +1,24 @@
+{
+  "id": "sap2000-mcp",
+  "name": "CSI SAP2000 Structural Engineering",
+  "category": "Structural Engineering",
+  "tags": ["sap2000", "structural", "civil", "mcp", "csi", "fem", "analysis"],
+  "author": {
+    "name": "AiConnect Official",
+    "url": "https://aiconnect.fun",
+    "verified": true
+  },
+  "description": "Automate CSI SAP2000 structural analysis, finite element modeling, load cases, and result extraction directly from AI agents.",
+  "license": "MIT",
+  "homepage": "https://github.com/rezahanif/Skills_SAP",
+  "assets": {
+    "icon": "assets/logo.svg",
+    "banner": "assets/banner.png"
+  },
+  "capabilities": [
+    "Define structural frames, joints, and material properties",
+    "Configure dead, live, wind, and earthquake load cases",
+    "Execute finite element structural analysis",
+    "Extract joint displacements, member forces, and design ratios"
+  ]
+}
