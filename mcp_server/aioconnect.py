@@ -99,6 +99,19 @@ def _wrap_result(r):
     return json.dumps(ok(r))
 
 
+def _fail_from_exception(e: Exception) -> str:
+    """Typed SAPError → structured fail with code/hint/recovery.
+    Anything else → generic TOOL_ERROR."""
+    to_payload = getattr(e, "to_payload", None)
+    if callable(to_payload):
+        return json.dumps(fail(
+            e.error_code.upper(),
+            e.message,
+            suggested_actions=e.recovery,
+        ))
+    return json.dumps(fail("TOOL_ERROR", str(e)))
+
+
 async def _call(fn, args, kwargs):
     if asyncio.iscoroutinefunction(fn):
         return await fn(*args, **kwargs)
@@ -119,7 +132,7 @@ def _make_sync_wrapper(fn):
         except LicenseError as e:
             return json.dumps(fail("LICENSE", str(e)))
         except Exception as e:
-            return json.dumps(fail("TOOL_ERROR", str(e)))
+            return _fail_from_exception(e)
     return _w
 
 
@@ -138,7 +151,7 @@ def _wrap(fn):
         except LicenseError as e:
             return json.dumps(fail("LICENSE", str(e)))
         except Exception as e:
-            return json.dumps(fail("TOOL_ERROR", str(e)))
+            return _fail_from_exception(e)
     return _w
 
 

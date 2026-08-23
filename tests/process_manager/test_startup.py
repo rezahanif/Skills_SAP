@@ -22,6 +22,7 @@ EXPECTED_TOOLS = {
     "query_function_registry",
     "list_registry_categories",
     "register_verified_function",
+    "get_error_hints",
 }
 
 

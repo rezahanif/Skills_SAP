@@ -126,9 +126,11 @@ def test_bridge_starts_disconnected(fresh_bridge):
 
 
 def test_get_model_info_not_connected(fresh_bridge):
-    info = fresh_bridge.get_model_info()
-    assert info["connected"] is False
-    assert "error" in info
+    import pytest
+    from errors import NotConnectedError
+
+    with pytest.raises(NotConnectedError):
+        fresh_bridge.get_model_info()
 
 
 def test_disconnect_when_not_connected(fresh_bridge):
@@ -164,11 +166,13 @@ def test_disconnect_releases_references(fresh_bridge):
 
 
 def test_execute_function_not_connected(fresh_bridge):
+    import pytest
+    from errors import NotConnectedError
+
     module_bridge.disconnect(save_model=False)
     module_bridge._helper = None
-    r = execute_function("SapModel.FrameObj.AddByCoord", [0, 0, 0])
-    assert r["success"] is False
-    assert "connect_sap2000" in r["error"]
+    with pytest.raises(NotConnectedError):
+        execute_function("SapModel.FrameObj.AddByCoord", [0, 0, 0])
 
 
 def test_execute_function_byref_convention(fresh_bridge):
@@ -181,10 +185,14 @@ def test_execute_function_byref_convention(fresh_bridge):
 
 
 def test_execute_function_bad_path(fresh_bridge):
+    import pytest
+    from errors import PathResolveError
+
     fresh_bridge.connect()
-    r = execute_function("SapModel.Nonexistent.DoThing", [])
-    assert r["success"] is False
-    assert "Could not resolve" in r["error"]
+    with pytest.raises(PathResolveError) as exc_info:
+        execute_function("SapModel.Nonexistent.DoThing", [])
+    assert "Could not resolve" in str(exc_info.value)
+    assert exc_info.value.details["function_path"] == "SapModel.Nonexistent.DoThing"
 
 
 def test_execute_function_sapobject_root(fresh_bridge):
@@ -194,24 +202,34 @@ def test_execute_function_sapobject_root(fresh_bridge):
 
 
 def test_run_script_blocked_import(fresh_bridge):
+    import pytest
+    from errors import ScriptExecutionError
+
     fresh_bridge.connect()
-    r = run_script("import os\nresult['x'] = 1")
-    assert r["success"] is False
-    assert "blocked" in r["error"].lower()
+    with pytest.raises(ScriptExecutionError) as exc_info:
+        run_script("import os\nresult['x'] = 1")
+    assert "blocked" in str(exc_info.value).lower()
 
 
 def test_run_script_open_blocked(fresh_bridge):
+    import pytest
+    from errors import ScriptExecutionError
+
     fresh_bridge.connect()
-    r = run_script("f = open('x.txt', 'w')")
-    assert r["success"] is False
-    assert "not allowed" in r["error"]
+    with pytest.raises(ScriptExecutionError) as exc_info:
+        run_script("f = open('x.txt', 'w')")
+    assert "not allowed" in str(exc_info.value)
 
 
 def test_run_script_syntax_error(fresh_bridge):
+    import pytest
+    from errors import ScriptSyntaxError
+
     fresh_bridge.connect()
-    r = run_script("def broken(:")
-    assert r["success"] is False
-    assert "Syntax error" in r["error"]
+    with pytest.raises(ScriptSyntaxError) as exc_info:
+        run_script("def broken(:")
+    assert "Syntax error" in str(exc_info.value)
+    assert exc_info.value.details["line"] is not None
 
 
 def test_run_script_success_injects_references(fresh_bridge):
@@ -229,10 +247,13 @@ def test_run_script_success_injects_references(fresh_bridge):
 
 
 def test_run_script_not_connected(fresh_bridge):
+    import pytest
+    from errors import NotConnectedError
+
     module_bridge.disconnect(save_model=False)
     module_bridge._helper = None
-    r = run_script("result['x'] = 1")
-    assert r["success"] is False
+    with pytest.raises(NotConnectedError):
+        run_script("result['x'] = 1")
 
 
 def test_run_script_auto_registers_api_functions(fresh_bridge, tmp_path):

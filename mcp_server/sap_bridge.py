@@ -14,6 +14,8 @@ work headless); only connect_sap2000 requires real COM.
 
 import logging
 
+from errors import ConnectionFailedError, NotConnectedError
+
 logger = logging.getLogger(__name__)
 
 
@@ -114,7 +116,13 @@ class SapBridge:
             self._sap_object = None
             self._sap_model = None
             logger.exception("Failed to connect to SAP2000.")
-            return {"connected": False, "error": str(exc)}
+            raise ConnectionFailedError(
+                str(exc),
+                details={
+                    "attach_to_existing": attach_to_existing,
+                    "program_path": program_path,
+                },
+            ) from exc
 
     def disconnect(self, save_model: bool = False) -> dict:
         """
@@ -144,7 +152,10 @@ class SapBridge:
         Useful for the agent to verify state before/after executing scripts.
         """
         if not self.is_connected:
-            return {"connected": False, "error": "Not connected to SAP2000."}
+            raise NotConnectedError(
+                "Not connected to SAP2000.",
+                details={"operation": "get_model_info"},
+            )
 
         return {"connected": True, **self._model_summary()}
 

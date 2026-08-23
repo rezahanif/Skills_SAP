@@ -28,6 +28,14 @@ import builtins as _builtins
 from sap_bridge import bridge
 from script_library import save_script
 from function_registry import registry as function_registry
+from errors import (
+    APIReturnCodeError,
+    NotConnectedError,
+    PathResolveError,
+    ScriptExecutionError,
+    ScriptSyntaxError,
+    ScriptTimeoutError,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -68,10 +76,10 @@ def execute_function(function_path: str, args: list, description: str = "") -> d
     dict with keys: success, return_value, description, error
     """
     if not bridge.is_connected:
-        return {
-            "success": False,
-            "error": "Not connected to SAP2000. Call connect_sap2000 first.",
-        }
+        raise NotConnectedError(
+            "Not connected to SAP2000.",
+            details={"operation": "execute_function", "function_path": function_path},
+        )
 
     # Determine root object
     if function_path.startswith("SapObject."):
@@ -89,21 +97,19 @@ def execute_function(function_path: str, args: list, description: str = "") -> d
         parent, method_name = _resolve_com_path(root, relative_path)
         method = getattr(parent, method_name)
     except AttributeError as exc:
-        return {
-            "success": False,
-            "error": f"Could not resolve path '{function_path}': {exc}",
-            "description": description,
-        }
+        raise PathResolveError(
+            f"Could not resolve path '{function_path}': {exc}",
+            details={"function_path": function_path, "description": description},
+        ) from exc
 
     try:
         result = method(*args)
     except Exception as exc:
         logger.exception("Error executing %s", function_path)
-        return {
-            "success": False,
-            "error": str(exc),
-            "description": description,
-        }
+        raise ScriptExecutionError(
+            str(exc),
+            details={"function_path": function_path, "description": description},
+        ) from exc
 
     # Interpret result — SAP2000 typically returns an int (0 = success)
     # or a tuple when ByRef params are present.
@@ -115,6 +121,17 @@ def execute_function(function_path: str, args: list, description: str = "") -> d
         output_params = list(result[:-1])   # All ByRef outputs before it
 
     success = (return_value == 0) if isinstance(return_value, int) else True
+
+    if not success:
+        raise APIReturnCodeError(
+            f"SAP2000 returned nonzero code {return_value} from {function_path}",
+            details={
+                "function_path": function_path,
+                "return_value": return_value,
+                "output_params": output_params,
+                "description": description,
+            },
+        )
 
     response = {
         "success": success,
@@ -256,10 +273,10 @@ def run_script(script: str, description: str = "", save_as: str | None = None) -
       success, stdout, stderr, result, execution_time_s, error
     """
     if not bridge.is_connected:
-        return {
-            "success": False,
-            "error": "Not connected to SAP2000. Call connect_sap2000 first.",
-        }
+        raise NotConnectedError(
+            "Not connected to SAP2000.",
+            details={"operation": "run_script"},
+        )
 
     sandbox_globals = _build_sandbox_globals()
     captured_stdout = io.StringIO()
@@ -290,15 +307,10 @@ def run_script(script: str, description: str = "", save_as: str | None = None) -
     try:
         ast.parse(script)
     except SyntaxError as e:
-        return {
-            "success": False,
-            "error": f"Syntax error at line {e.lineno}: {e.msg}",
-            "stdout": "",
-            "stderr": "",
-            "result": {},
-            "execution_time_s": 0,
-            "description": description,
-        }
+        raise ScriptSyntaxError(
+            f"Syntax error at line {e.lineno}: {e.msg}",
+            details={"line": e.lineno, "description": description},
+        ) from e
 
     thread = threading.Thread(target=_run, daemon=True)
     thread.start()
@@ -312,26 +324,26 @@ def run_script(script: str, description: str = "", save_as: str | None = None) -
             "The SAP2000 model may be corrupted by concurrent modifications. Monitor the COM connection status.",
             SCRIPT_TIMEOUT_S,
         )
-        return {
-            "success": False,
-            "error": f"Script timed out after {SCRIPT_TIMEOUT_S}s. Background thread is still running and may corrupt the model.",
-            "stdout": captured_stdout.getvalue(),
-            "stderr": captured_stderr.getvalue(),
-            "result": sandbox_globals.get("result", {}),
-            "execution_time_s": round(elapsed, 3),
-            "description": description,
-        }
+        raise ScriptTimeoutError(
+            f"Script timed out after {SCRIPT_TIMEOUT_S}s. Background thread is still running and may corrupt the model.",
+            details={
+                "timeout_s": SCRIPT_TIMEOUT_S,
+                "partial_result": sandbox_globals.get("result", {}),
+                "description": description,
+            },
+        )
 
     if exec_error[0] is not None:
-        return {
-            "success": False,
-            "error": str(exec_error[0]),
-            "stdout": captured_stdout.getvalue(),
-            "stderr": captured_stderr.getvalue(),
-            "result": sandbox_globals.get("result", {}),
-            "execution_time_s": round(elapsed, 3),
-            "description": description,
-        }
+        raise ScriptExecutionError(
+            str(exec_error[0]),
+            details={
+                "stdout": captured_stdout.getvalue(),
+                "stderr": captured_stderr.getvalue(),
+                "partial_result": sandbox_globals.get("result", {}),
+                "execution_time_s": round(elapsed, 3),
+                "description": description,
+            },
+        )
 
     response = {
         "success": True,

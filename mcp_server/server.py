@@ -29,6 +29,7 @@ from sap_executor import execute_function, run_script
 from script_library import list_scripts as _list_scripts, load_script as _load_script
 from doc_search import doc_index
 from function_registry import registry
+from errors import ERROR_HINTS
 
 logging.basicConfig(
     level=logging.INFO,
@@ -296,6 +297,25 @@ def list_registry_categories() -> list[dict]:
         }
         for cat, counts in sorted(categories.items())
     ]
+
+
+@mcp.tool()
+def get_error_hints(error_code: str | None = None) -> dict:
+    """Get recovery hints for a SAP2000 error code, or all error types.
+
+    error_code: Optional code from a failed call's envelope
+                (e.g. "NOT_CONNECTED", "SCRIPT_TIMEOUT", "PATH_NOT_FOUND").
+
+    Returns: dict with hint and recovery actions. Use this after any
+    failed tool call to decide the next step.
+    """
+    if error_code:
+        key = error_code.lower()
+        hint = ERROR_HINTS.get(key)
+        if hint:
+            return {"error_code": key, **hint}
+        return {"error_code": error_code, "hint": "No hints available for this error code"}
+    return {"error_types": list(ERROR_HINTS.keys()), "hints": ERROR_HINTS}
 
 
 # ── Run ──────────────────────────────────────────────────────────────────
