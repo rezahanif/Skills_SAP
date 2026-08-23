@@ -16,7 +16,15 @@
   "token_env_var": "MCP_LICENSE_TOKEN",
   "stdio": true,
   "platform_requirements": {
-    "windows": ["Windows 10/11", "SAP2000 installed (COM automation)"],
-    "com": ["SAP2000 must be running or launchable for connect_sap2000; MCP server starts fine without it"]
+    "windows": [
+      "Windows 10/11",
+      "SAP2000 installed (COM automation)"
+    ],
+    "com": [
+      "SAP2000 must be running or launchable for connect_sap2000; MCP server starts fine without it"
+    ]
+  },
+  "config": {
+    "env": []
   }
 }
