@@ -11,12 +11,13 @@ import os
 import sys
 import time
 
-FORK = "/project/Skills_SAP"
+from pathlib import Path
+FORK = str(Path(__file__).resolve().parents[1])
 sys.path.insert(0, FORK)
 
 # AiConnect SDK is external (not vendored — IP boundary). Dev default points
 # at the aiconnector monorepo; override with AICONNECT_SDK_PATH.
-os.environ.setdefault("AICONNECT_SDK_PATH", "/project/aiconnector/connectors/sdk/python")
+os.environ.setdefault("AICONNECT_SDK_PATH", str(FORK.parent / "aiconnector" / "connectors" / "sdk" / "python"))
 
 from mcp_server import aioconnect  # noqa: E402
 from mcp_license_sdk import LicenseError  # noqa: E402

@@ -265,8 +265,8 @@
       "signature": "() -> count",
       "verified": true,
       "first_verified": "2026-03-20T14:41:35.560733+00:00",
-      "last_verified": "2026-08-15T18:17:35.897190+00:00",
-      "verification_count": 17,
+      "last_verified": "2026-08-24T13:43:59.668238+00:00",
+      "verification_count": 22,
       "wrapper_script": "",
       "used_in_scripts": [],
       "parameter_notes": "No inputs. Returns integer count directly.",
@@ -3696,6 +3696,6 @@
   "summary": {
     "total_registered": 241,
     "total_verified": 241,
-    "last_updated": "2026-08-15T18:17:35.897218+00:00"
+    "last_updated": "2026-08-24T13:43:59.668266+00:00"
   }
 }

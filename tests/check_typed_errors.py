@@ -11,7 +11,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "mcp_server"))
-os.environ["AICONNECT_SDK_PATH"] = "/project/aiconnector/connectors/sdk/python"
+os.environ["AICONNECT_SDK_PATH"] = str(Path(__file__).resolve().parents[1].parent / "aiconnector" / "connectors" / "sdk" / "python")
 
 results = []
 

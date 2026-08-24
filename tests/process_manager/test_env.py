@@ -6,6 +6,7 @@ clean-environment startup.
 """
 import os
 import subprocess
+import sys
 
 from fake_license import (
     RUN_SERVER,
@@ -75,7 +76,7 @@ def test_clean_environment_startup():
         "HOME": os.environ.get("HOME", "/tmp"),
     }
     proc = subprocess.Popen(
-        ["/usr/local/bin/python3", str(RUN_SERVER)],
+        [sys.executable, str(RUN_SERVER)],
         stdin=subprocess.PIPE,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,

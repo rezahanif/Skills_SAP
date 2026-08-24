@@ -23,7 +23,7 @@ CONNECTOR_ID = "sap2000-mcp"
 
 # The shared AiConnect SDK is NOT vendored in this repo (IP boundary). Point
 # AICONNECT_SDK_PATH at the installed SDK; dev default = aiconnector monorepo.
-DEFAULT_SDK = "/project/aiconnector/connectors/sdk/python"
+DEFAULT_SDK = str(Path(__file__).resolve().parents[1].parent / "aiconnector" / "connectors" / "sdk" / "python")
 
 
 def mint(entitlements=None, subject=None, ttl=600, secret=SECRET):

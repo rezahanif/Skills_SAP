@@ -1,0 +1,9 @@
+[project]
+name = "skills-sap"
+version = "1.0.0"
+description = "SAP2000 MCP connector for AiConnect"
+requires-python = ">=3.11"
+dependencies = [
+    "mcp>=1.20,<2",
+    "pydantic>=2.0",
+]
