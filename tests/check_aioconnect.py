@@ -12,12 +12,12 @@ import sys
 import time
 
 from pathlib import Path
-FORK = str(Path(__file__).resolve().parents[1])
-sys.path.insert(0, FORK)
+FORK = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(FORK))
 
 # AiConnect SDK is external (not vendored — IP boundary). Dev default points
-# at the aiconnector monorepo; override with AICONNECT_SDK_PATH.
-os.environ.setdefault("AICONNECT_SDK_PATH", str(FORK.parent / "aiconnector" / "connectors" / "sdk" / "python"))
+# at the sibling connector-sdk checkout; override with AICONNECT_SDK_PATH.
+os.environ.setdefault("AICONNECT_SDK_PATH", str(FORK.parent / "connector-sdk" / "python"))
 
 from mcp_server import aioconnect  # noqa: E402
 from mcp_license_sdk import LicenseError  # noqa: E402
