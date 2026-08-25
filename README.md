@@ -145,7 +145,6 @@ Interfaces gráficas completas construidas con PySide6, operables sin Claude Cod
 
 Generador de modelo base con materiales, patrones de carga, secciones de acero/HA, espectros NCh2369 y combinaciones LRFD/ASD/NCh. Configuración completa en archivo `config.py` con parámetros sísmicos por zona.
 
-<!-- TODO: Agregar screenshot de GUI modelo_base -->
 
 ### Placa Base Paramétrica
 
@@ -153,7 +152,6 @@ Generador de modelo base con materiales, patrones de carga, secciones de acero/H
 
 Interfaz para generar placas base con control visual de todos los parámetros: pernos, silla de anclaje, balasto, y mallado. Incluye worker threads para ejecución asíncrona sin bloquear la GUI.
 
-<!-- TODO: Agregar screenshot de GUI placabase -->
 
 ### Anillo Circular
 
@@ -161,7 +159,6 @@ Interfaz para generar placas base con control visual de todos los parámetros: p
 
 GUI para generar anillos circulares parametrizados con control de radios, espesores y calidad de malla por zona concéntrica.
 
-<!-- TODO: Agregar screenshot de GUI ring_areas -->
 
 ### Explorador de Database Tables
 
@@ -169,7 +166,6 @@ GUI para generar anillos circulares parametrizados con control de radios, espeso
 
 Navegador y editor de las tablas internas de SAP2000. Permite listar todas las tablas, leer datos, editar celdas y exportar a CSV/XML/Excel. Cubre las 37 funciones de `DatabaseTables.*`.
 
-<!-- TODO: Agregar screenshot de GUI database_tables -->
 
 ### Post-Proceso: Estabilidad y Shells
 
@@ -177,7 +173,6 @@ Navegador y editor de las tablas internas de SAP2000. Permite listar todas las t
 
 Extracción de resultados de análisis: desplazamientos de nodos (`JointDispl`) para verificación de estabilidad y fuerzas en shells (`AreaForceShell`) para todas las combinaciones de carga. Opera sobre la selección manual del usuario en SAP2000.
 
-<!-- TODO: Agregar screenshot de GUI post_proceso -->
 
 ### Combinaciones de Carga
 
