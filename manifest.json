@@ -24,7 +24,37 @@
       "SAP2000 must be running or launchable for connect_sap2000; MCP server starts fine without it"
     ]
   },
+  "tool_index": {
+    "exec_tool": "execute_sap_function",
+    "capabilities_file": "mcp_server/aiconnect-capabilities.json",
+    "relevance_floor": 5.5
+  },
   "config": {
     "env": []
+  },
+  "package": {
+    "include": [
+      "run_server.py",
+      "mcp_server",
+      "scripts",
+      "API"
+    ],
+    "exclude": [
+      "scripts/package-acpkg.sh",
+      "scripts/gen_capabilities.py"
+    ]
+  },
+  "tool_tiers": {
+    "core": [
+      "search_api_docs",
+      "list_api_categories",
+      "list_registry_categories",
+      "list_scripts",
+      "query_function_registry",
+      "execute_sap_function",
+      "run_sap_script",
+      "get_model_info",
+      "get_error_hints"
+    ]
   }
 }
