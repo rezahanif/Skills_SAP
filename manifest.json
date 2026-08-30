@@ -42,6 +42,9 @@
     "exclude": [
       "scripts/package-acpkg.sh",
       "scripts/gen_capabilities.py"
+    ],
+    "vendor": [
+      "_vendor"
     ]
   },
   "tool_tiers": {

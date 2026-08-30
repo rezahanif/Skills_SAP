@@ -9,7 +9,6 @@ from typing import Any, Literal
 
 from pydantic import Field
 
-from fastmcp import FastMCP  # noqa: F401  (re-export convenience)
 
 # ── Shared enum-like constraints ─────────────────────────────────────────
 AppName = Literal["SAP2000"]

@@ -3,3 +3,7 @@ __pycache__/
 *.pyc
 .pytest_cache/
 dist/
+
+# Vendored Windows dependency tree, built by
+# aiconnector/scripts/release/stage-python-vendor.py before packaging. Build artifact.
+_vendor/

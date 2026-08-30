@@ -1,3 +1,7 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
 [project]
 name = "skills-sap"
 version = "1.0.0"
@@ -7,3 +11,12 @@ dependencies = [
     "mcp>=1.20,<2",
     "pydantic>=2.0",
 ]
+
+[tool.hatch.build.targets.wheel]
+# Explicit, because this repo is flat-layout with several top-level directories
+# (API/, assets/, mcp_server/, scripts/). Without this, setuptools auto-discovery
+# refused to build at all — see N35.
+packages = ["mcp_server"]
+# Tests are not runtime payload. Shipping mcp_server/tests/ in the wheel made the
+# distribution's own modules unimportable without pytest installed.
+exclude = ["mcp_server/tests"]

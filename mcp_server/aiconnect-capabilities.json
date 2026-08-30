@@ -1,0 +1,1451 @@
+{
+ "exec_tool": "execute_sap_function",
+ "capabilities": [
+  {
+   "name": "SapModel.Analyze.GetActiveDOF",
+   "description": "Retrieve active global degrees of freedom for analysis model",
+   "category": "Analyze",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.Analyze.GetCaseStatus",
+   "description": "Retrieve run status for all load cases (1=Not run, 4=Finished)",
+   "category": "Analyze",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.Analyze.GetSolverOption_1",
+   "description": "",
+   "category": "General",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.Analyze.GetSolverOption_2",
+   "description": "",
+   "category": "General",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.Analyze.GetSolverOption_3",
+   "description": "",
+   "category": "General",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.Analyze.RunAnalysis",
+   "description": "Run the structural analysis for all active load cases",
+   "category": "Analyze",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.Analyze.SetActiveDOF",
+   "description": "Set active/inactive global degrees of freedom for analysis model",
+   "category": "Analyze",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.Analyze.SetSolverOption_2",
+   "description": "",
+   "category": "General",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.Analyze.SetSolverOption_3",
+   "description": "",
+   "category": "General",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.AreaObj.AddByCoord",
+   "description": "Crea un objeto de \u00e1rea (shell) definiendo sus v\u00e9rtices por coordenadas.",
+   "category": "AreaObj",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.AreaObj.AddByPoint",
+   "description": "Add an area object by specifying existing point names",
+   "category": "Object_Model",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.AreaObj.Count",
+   "description": "Get the number of area objects in the model",
+   "category": "Object_Model",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.AreaObj.Delete",
+   "description": "Delete an area object from the model",
+   "category": "Object_Model",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.AreaObj.GetGroupAssign",
+   "description": "Get groups assigned to an area object",
+   "category": "Object_Model",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.AreaObj.GetLoadUniform",
+   "description": "",
+   "category": "General",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.AreaObj.GetNameList",
+   "description": "Get names of all area objects in the model",
+   "category": "Object_Model",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.AreaObj.GetPoints",
+   "description": "Get the corner point names of an area object",
+   "category": "Object_Model",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.AreaObj.GetProperty",
+   "description": "Get the section property assigned to an area object",
+   "category": "Object_Model",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.AreaObj.SetGroupAssign",
+   "description": "Add or remove area objects from a group",
+   "category": "Object_Model",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.AreaObj.SetLoadGravity",
+   "description": "Assign gravity load multipliers to area objects",
+   "category": "Object_Model",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.AreaObj.SetLoadUniform",
+   "description": "Assign uniform distributed loads [F/L\u00b2] to area objects",
+   "category": "Object_Model",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.AreaObj.SetProperty",
+   "description": "Assign or change area section property on an area object",
+   "category": "Object_Model",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.AreaObj.SetSpring",
+   "description": "Assign area springs (Winkler foundation) to an area element",
+   "category": "Object_Model",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.ConstraintDef.GetBody",
+   "description": "Get the DOF configuration of a body constraint",
+   "category": "Constraints",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.ConstraintDef.GetDiaphragm",
+   "description": "Retrieve diaphragm constraint definition (axis and coordinate system)",
+   "category": "Constraints",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.ConstraintDef.GetNameList",
+   "description": "Get names of all constraints defined in the model",
+   "category": "Constraints",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.ConstraintDef.SetBody",
+   "description": "Define a body constraint (rigid link) for DOF coupling",
+   "category": "Constraints",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.ConstraintDef.SetDiaphragm",
+   "description": "Define a diaphragm constraint (rigid floor)",
+   "category": "Constraints",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.DatabaseTables.ApplyEditedTables",
+   "description": "Apply all pending table edits to the model.",
+   "category": "Database_Tables",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.DatabaseTables.CancelTableEditing",
+   "description": "Cancel all pending table edits without applying them.",
+   "category": "Database_Tables",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.DatabaseTables.GetAllFieldsInTable",
+   "description": "Returns all fields (columns) metadata for a specific table",
+   "category": "Database_Tables",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.DatabaseTables.GetAllTables",
+   "description": "Returns all tables with import type and empty status",
+   "category": "Database_Tables",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.DatabaseTables.GetAvailableTables",
+   "description": "Returns available (non-empty) tables with their import type \u2014 lighter query than GetAllTables",
+   "category": "Database_Tables",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.DatabaseTables.GetElementVirtualWorkNamedSetsSelectedForDisplay",
+   "description": "Returns the element virtual work named sets currently selected for display",
+   "category": "Database_Tables",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.DatabaseTables.GetGeneralizedDisplacementsSelectedForDisplay",
+   "description": "Returns the generalized displacements currently selected for display",
+   "category": "Database_Tables",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.DatabaseTables.GetJointResponseSpectraNamedSetsSelectedForDisplay",
+   "description": "Returns the joint response spectra named sets currently selected for display",
+   "category": "Database_Tables",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.DatabaseTables.GetLoadCasesSelectedForDisplay",
+   "description": "Returns the load cases currently selected for display in database tables",
+   "category": "Database_Tables",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.DatabaseTables.GetLoadCombinationsSelectedForDisplay",
+   "description": "Returns the load combinations currently selected for display in database tables",
+   "category": "Database_Tables",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.DatabaseTables.GetLoadPatternsSelectedForDisplay",
+   "description": "Returns the load patterns currently selected for display in database tables",
+   "category": "Database_Tables",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.DatabaseTables.GetObsoleteTableKeyList",
+   "description": "Returns list of obsolete table keys and associated version notes",
+   "category": "Database_Tables",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.DatabaseTables.GetPlotFunctionTracesNamedSetsSelectedForDisplay",
+   "description": "Returns the plot function traces named sets currently selected for display",
+   "category": "Database_Tables",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.DatabaseTables.GetPushoverNamedSetsSelectedForDisplay",
+   "description": "Returns the pushover named sets currently selected for display",
+   "category": "Database_Tables",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.DatabaseTables.GetSectionCutsSelectedForDisplay",
+   "description": "Returns the section cuts currently selected for display",
+   "category": "Database_Tables",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.DatabaseTables.GetTableForDisplayArray",
+   "description": "Read table data for display (read-only) as flat array.",
+   "category": "Database_Tables",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.DatabaseTables.GetTableForDisplayCSVFile",
+   "description": "Export table display data to a CSV file",
+   "category": "Database_Tables",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.DatabaseTables.GetTableForDisplayCSVString",
+   "description": "Export table display data as a CSV string",
+   "category": "Database_Tables",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.DatabaseTables.GetTableForDisplayXMLString",
+   "description": "Export table display data as an XML string",
+   "category": "Database_Tables",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.DatabaseTables.GetTableForEditingArray",
+   "description": "Read a table as flat array for interactive editing.",
+   "category": "Database_Tables",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.DatabaseTables.GetTableForEditingCSVFile",
+   "description": "Export editable table data to a CSV file",
+   "category": "Database_Tables",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.DatabaseTables.GetTableForEditingCSVString",
+   "description": "Export editable table data as a CSV string",
+   "category": "Database_Tables",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.DatabaseTables.GetTableOutputOptionsForDisplay",
+   "description": "Returns table output display options (18 ByRef params: BaseReaction coords, mode ranges, history options)",
+   "category": "Database_Tables",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.DatabaseTables.SetElementVirtualWorkNamedSetsSelectedForDisplay",
+   "description": "Sets the element virtual work named sets selected for display",
+   "category": "Database_Tables",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.DatabaseTables.SetGeneralizedDisplacementsSelectedForDisplay",
+   "description": "Sets the generalized displacements selected for display",
+   "category": "Database_Tables",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.DatabaseTables.SetJointResponseSpectraNamedSetsSelectedForDisplay",
+   "description": "Sets the joint response spectra named sets selected for display",
+   "category": "Database_Tables",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.DatabaseTables.SetLoadCasesSelectedForDisplay",
+   "description": "Sets the load cases selected for display in database tables",
+   "category": "Database_Tables",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.DatabaseTables.SetLoadCombinationsSelectedForDisplay",
+   "description": "Sets the load combinations selected for display in database tables",
+   "category": "Database_Tables",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.DatabaseTables.SetLoadPatternsSelectedForDisplay",
+   "description": "Sets the load patterns selected for display in database tables",
+   "category": "Database_Tables",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.DatabaseTables.SetPlotFunctionTracesNamedSetsSelectedForDisplay",
+   "description": "Sets the plot function traces named sets selected for display",
+   "category": "Database_Tables",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.DatabaseTables.SetPushoverNamedSetsSelectedForDisplay",
+   "description": "Sets the pushover named sets selected for display",
+   "category": "Database_Tables",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.DatabaseTables.SetSectionCutsSelectedForDisplay",
+   "description": "Sets the section cuts selected for display",
+   "category": "Database_Tables",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.DatabaseTables.SetTableForEditingArray",
+   "description": "Write edited table data (flat array) back for import via ApplyEditedTables.",
+   "category": "Database_Tables",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.DatabaseTables.SetTableForEditingCSVFile",
+   "description": "Import table data from a CSV file for editing",
+   "category": "Database_Tables",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.DatabaseTables.SetTableForEditingCSVString",
+   "description": "Import table data from a CSV string for editing",
+   "category": "Database_Tables",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.DatabaseTables.SetTableOutputOptionsForDisplay",
+   "description": "Sets table output display options (18 params: BaseReaction coords, mode ranges, history options)",
+   "category": "Database_Tables",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.DatabaseTables.ShowTablesInExcel",
+   "description": "Export specified tables directly to Excel.",
+   "category": "Database_Tables",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.DesignConcrete.GetCode",
+   "description": "Retrieve current concrete design code",
+   "category": "Design",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.DesignConcrete.SetCode",
+   "description": "Set the concrete design code",
+   "category": "Design",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.DesignConcrete.SetComboStrength",
+   "description": "Select/deselect a combo for concrete strength design",
+   "category": "Design",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.DesignSteel.AISC360_16.GetOverwrite",
+   "description": "",
+   "category": "General",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.DesignSteel.AISC360_16.GetPreference",
+   "description": "",
+   "category": "General",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.DesignSteel.DeleteResults",
+   "description": "Delete all steel frame design results",
+   "category": "Design",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.DesignSteel.GetCode",
+   "description": "Retrieve current steel design code",
+   "category": "Design",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.DesignSteel.GetComboStrength",
+   "description": "Retrieve combos selected for steel strength design",
+   "category": "Design",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.DesignSteel.GetSummaryResults",
+   "description": "",
+   "category": "General",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.DesignSteel.SetCode",
+   "description": "Set the steel design code",
+   "category": "Design",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.DesignSteel.SetComboDeflection",
+   "description": "Select/deselect a combo for steel deflection design (serviceability)",
+   "category": "Design",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.DesignSteel.SetComboStrength",
+   "description": "Select/deselect a combo for steel strength design",
+   "category": "Design",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.EditArea.Divide",
+   "description": "Divide an area object into a mesh of smaller areas",
+   "category": "Edit",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.File.New2DFrame",
+   "description": "Create a new 2D frame model from a built-in template",
+   "category": "File",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.File.NewBlank",
+   "description": "Initialize a new blank model",
+   "category": "File",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.File.OpenFile",
+   "description": "Open an existing SAP2000 model file (.sdb)",
+   "category": "File",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.File.Save",
+   "description": "Save the current model to file",
+   "category": "File",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.FrameObj.AddByCoord",
+   "description": "Add a frame element defined by endpoint coordinates",
+   "category": "Object_Model",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.FrameObj.AddByPoint",
+   "description": "Create a frame element between two existing points",
+   "category": "Object_Model",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.FrameObj.Count",
+   "description": "Get the number of frame objects in the model",
+   "category": "Object_Model",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.FrameObj.Delete",
+   "description": "Delete a frame object from the model",
+   "category": "Object_Model",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.FrameObj.GetAutoMesh",
+   "description": "",
+   "category": "General",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.FrameObj.GetInsertionPoint_1",
+   "description": "Get the insertion point (cardinal point and offsets) of a frame",
+   "category": "Object_Model",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.FrameObj.GetLoadDistributed",
+   "description": "Retrieve distributed load assignments from frame objects",
+   "category": "Object_Model",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.FrameObj.GetLoadPoint",
+   "description": "",
+   "category": "General",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.FrameObj.GetLocalAxes",
+   "description": "Get the local axes rotation angle for a frame object",
+   "category": "Object_Model",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.FrameObj.GetModifiers",
+   "description": "Retrieve stiffness modification factors for a frame object",
+   "category": "FrameObj",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.FrameObj.GetNameList",
+   "description": "Get names of all frame objects in the model",
+   "category": "Object_Model",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.FrameObj.GetPoints",
+   "description": "Get the two endpoint point names of a frame object",
+   "category": "Object_Model",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.FrameObj.GetReleases",
+   "description": "Retrieve end release and partial fixity assignments from frame objects",
+   "category": "Object_Model",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.FrameObj.GetSection",
+   "description": "Get the section property assigned to a frame object",
+   "category": "Object_Model",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.FrameObj.GetTCLimits",
+   "description": "Get the tension/compression limits for a frame object",
+   "category": "Object_Model",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.FrameObj.SetGroupAssign",
+   "description": "Add or remove frame objects from a group",
+   "category": "Object_Model",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.FrameObj.SetInsertionPoint_1",
+   "description": "Assign cardinal point and joint offsets to frame objects",
+   "category": "Object_Model",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.FrameObj.SetLoadDistributed",
+   "description": "Assign distributed loads (force/moment per unit length) to frame objects",
+   "category": "Object_Model",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.FrameObj.SetLoadPoint",
+   "description": "Assign point loads (force/moment) to frame objects at specified distance",
+   "category": "Object_Model",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.FrameObj.SetLocalAxes",
+   "description": "Assign local axis rotation angle to frame objects",
+   "category": "Object_Model",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.FrameObj.SetModifiers",
+   "description": "Set stiffness modification factors for a frame object (cracked section analysis)",
+   "category": "FrameObj",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.FrameObj.SetReleases",
+   "description": "Assign end releases (hinges/partial fixity) to frame objects",
+   "category": "Object_Model",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.FrameObj.SetSection",
+   "description": "Assign or change the section property of a frame element",
+   "category": "Object_Model",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.FrameObj.SetTCLimits",
+   "description": "Set tension/compression force limits for a frame element",
+   "category": "Object_Model",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.Func.FuncRS.GetUser",
+   "description": "Get the user-defined response spectrum function data",
+   "category": "Functions",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.Func.FuncRS.SetUser",
+   "description": "Define a user-defined response spectrum function from period-value pairs",
+   "category": "Functions",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.Func.GetNameList",
+   "description": "",
+   "category": "General",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.GetModelFilename",
+   "description": "Get the current model file path",
+   "category": "File",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.GetModelIsLocked",
+   "description": "Check if the model is currently locked (analysis run)",
+   "category": "General_Functions",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.GetPresentUnits",
+   "description": "Get the current display units of the model",
+   "category": "General_Functions",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.GetVersion",
+   "description": "Get the SAP2000 version number",
+   "category": "General_Functions",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.GroupDef.GetAssignments",
+   "description": "Get all objects assigned to a named group",
+   "category": "Groups",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.GroupDef.GetNameList",
+   "description": "Retrieve names of all defined groups",
+   "category": "Groups",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.GroupDef.SetGroup",
+   "description": "Create or modify a group definition with properties",
+   "category": "Groups",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.InitializeNewModel",
+   "description": "Initialize a new model with specified units",
+   "category": "File",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.LinkObj.AddByCoord",
+   "description": "Create a link element by specifying I-End and J-End coordinates",
+   "category": "Object_Model",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.LinkObj.AddByPoint",
+   "description": "Create a two-joint link element between two existing point objects.",
+   "category": "Object_Model",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.LinkObj.Count",
+   "description": "Get the number of link objects in the model",
+   "category": "Object_Model",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.LinkObj.GetNameList",
+   "description": "",
+   "category": "General",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.LinkObj.GetPoints",
+   "description": "",
+   "category": "General",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.LinkObj.GetProperty",
+   "description": "",
+   "category": "General",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.LinkObj.SetProperty",
+   "description": "",
+   "category": "General",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.LoadCases.ChangeName",
+   "description": "Rename a load case",
+   "category": "Load_Cases",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.LoadCases.Count",
+   "description": "Get total number of load cases (optionally by type)",
+   "category": "Load_Cases",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.LoadCases.Delete",
+   "description": "Delete a load case",
+   "category": "Load_Cases",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.LoadCases.GetNameList",
+   "description": "Get names and types of all load cases defined",
+   "category": "Load_Cases",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.LoadCases.GetTypeOAPI",
+   "description": "Get the load case type for a named load case",
+   "category": "Load_Cases",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.LoadCases.GetTypeOAPI_1",
+   "description": "",
+   "category": "General",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.LoadCases.ModalEigen.SetCase",
+   "description": "",
+   "category": "General",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.LoadCases.ModalEigen.SetNumberModes",
+   "description": "",
+   "category": "General",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.LoadCases.ResponseSpectrum.GetDampConstant",
+   "description": "",
+   "category": "General",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.LoadCases.ResponseSpectrum.GetLoads",
+   "description": "Get the load components for a response spectrum load case",
+   "category": "Load_Cases",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.LoadCases.ResponseSpectrum.SetCase",
+   "description": "Initialize a response spectrum load case",
+   "category": "Load_Cases",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.LoadCases.ResponseSpectrum.SetDampConstant",
+   "description": "Set constant damping for a response spectrum case",
+   "category": "Load_Cases",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.LoadCases.ResponseSpectrum.SetLoads",
+   "description": "Assign directional response spectrum loads to a spectrum load case",
+   "category": "Load_Cases",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.LoadCases.ResponseSpectrum.SetModalCase",
+   "description": "",
+   "category": "General",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.LoadCases.ResponseSpectrum.SetModalComb_1",
+   "description": "",
+   "category": "General",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.LoadPatterns.Add",
+   "description": "Add a new load pattern to the model",
+   "category": "Load_Patterns",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.LoadPatterns.ChangeName",
+   "description": "Rename a load pattern",
+   "category": "Load_Patterns",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.LoadPatterns.Count",
+   "description": "Get total number of load patterns",
+   "category": "Load_Patterns",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.LoadPatterns.Delete",
+   "description": "Delete a load pattern",
+   "category": "Load_Patterns",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.LoadPatterns.GetLoadType",
+   "description": "",
+   "category": "General",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.LoadPatterns.GetNameList",
+   "description": "Get names and types of all load patterns defined",
+   "category": "Load_Patterns",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.LoadPatterns.GetSelfWTMultiplier",
+   "description": "",
+   "category": "General",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.LoadPatterns.SetSelfWTMultiplier",
+   "description": "Set the self-weight multiplier for a load pattern",
+   "category": "Load_Patterns",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PointObj.AddCartesian",
+   "description": "Create a point object at Cartesian coordinates",
+   "category": "Object_Model",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PointObj.Count",
+   "description": "Get the number of point objects in the model",
+   "category": "Object_Model",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PointObj.GetCoordCartesian",
+   "description": "Get Cartesian coordinates of a point object",
+   "category": "Object_Model",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PointObj.GetLoadForce",
+   "description": "Get point loads assigned to a joint",
+   "category": "Object_Model",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PointObj.GetNameList",
+   "description": "Get names of all point objects in the model",
+   "category": "Object_Model",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PointObj.GetRestraint",
+   "description": "Get the restraint conditions for a point object",
+   "category": "Object_Model",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PointObj.GetSpring",
+   "description": "",
+   "category": "General",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PointObj.SetConstraint",
+   "description": "Assign a constraint to a point object",
+   "category": "Object_Model",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PointObj.SetLoadForce",
+   "description": "Assign point load forces and moments to point objects",
+   "category": "Object_Model",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PointObj.SetMass",
+   "description": "",
+   "category": "General",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PointObj.SetRestraint",
+   "description": "Assign translational and rotational restraints to a joint",
+   "category": "Object_Model",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PointObj.SetSpring",
+   "description": "",
+   "category": "General",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PropArea.GetModifiers",
+   "description": "Retrieve stiffness modification factors for an area property",
+   "category": "PropArea",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PropArea.GetNameList",
+   "description": "Get names of all area section properties defined in the model",
+   "category": "Properties",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PropArea.GetShell_1",
+   "description": "Retrieve shell-type area section properties (type, material, thicknesses)",
+   "category": "Properties",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PropArea.SetModifiers",
+   "description": "Set stiffness modification factors for an area property (shell/slab/wall)",
+   "category": "PropArea",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PropArea.SetShell_1",
+   "description": "Define una propiedad de \u00e1rea tipo shell.",
+   "category": "PropArea",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PropFrame.ChangeName",
+   "description": "Rename a frame section property",
+   "category": "PropFrame",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PropFrame.Count",
+   "description": "Get total number of frame section properties (optionally filtered by type)",
+   "category": "PropFrame",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PropFrame.Delete",
+   "description": "Delete a frame section property (must not be in use by any element)",
+   "category": "PropFrame",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PropFrame.GetCircle",
+   "description": "Retrieve circular (solid) section properties",
+   "category": "PropFrame",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PropFrame.GetISection",
+   "description": "Retrieve I-section properties",
+   "category": "PropFrame",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PropFrame.GetMaterial",
+   "description": "",
+   "category": "General",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PropFrame.GetNameList",
+   "description": "Get names of all frame section properties defined in the model",
+   "category": "Properties",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PropFrame.GetPropFileNameList",
+   "description": "",
+   "category": "General",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PropFrame.GetRectangle",
+   "description": "Retrieve rectangular section properties",
+   "category": "PropFrame",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PropFrame.GetSectProps",
+   "description": "",
+   "category": "General",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PropFrame.GetTube",
+   "description": "",
+   "category": "General",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PropFrame.GetTypeOAPI",
+   "description": "",
+   "category": "General",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PropFrame.SetAngle",
+   "description": "Define an angle (L-shape) frame section",
+   "category": "PropFrame",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PropFrame.SetChannel",
+   "description": "Define a channel (C-shape) frame section",
+   "category": "PropFrame",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PropFrame.SetCircle",
+   "description": "Define a solid circular frame section",
+   "category": "PropFrame",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PropFrame.SetGeneral",
+   "description": "",
+   "category": "General",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PropFrame.SetISection",
+   "description": "Define a general I-section (W-shape / H-beam)",
+   "category": "PropFrame",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PropFrame.SetModifiers",
+   "description": "",
+   "category": "General",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PropFrame.SetPipe",
+   "description": "Define a circular pipe (hollow) frame section",
+   "category": "PropFrame",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PropFrame.SetRectangle",
+   "description": "Define a rectangular (solid) frame section",
+   "category": "PropFrame",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PropFrame.SetTube",
+   "description": "Define a rectangular tube (HSS) frame section",
+   "category": "PropFrame",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PropLink.Count",
+   "description": "Get the number of link/support properties defined",
+   "category": "Properties",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PropLink.GetLinear",
+   "description": "Get linear link property parameters",
+   "category": "Properties",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PropLink.GetNameList",
+   "description": "",
+   "category": "General",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PropLink.SetGap",
+   "description": "Define a Gap-type nonlinear link property (compression-only).",
+   "category": "Properties",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PropLink.SetLinear",
+   "description": "Define a linear-type link property (stiffness, damping, DOFs)",
+   "category": "Properties",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PropMaterial.AddMaterial",
+   "description": "Add a material from the built-in SAP2000 database",
+   "category": "PropMaterial",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PropMaterial.ChangeName",
+   "description": "Rename a material property",
+   "category": "PropMaterial",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PropMaterial.Count",
+   "description": "Get total number of material properties (optionally filtered by material type)",
+   "category": "PropMaterial",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PropMaterial.Delete",
+   "description": "Delete a material property (must not be in use by any section)",
+   "category": "PropMaterial",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PropMaterial.GetMPIsotropic",
+   "description": "Retrieve isotropic mechanical properties (E, Poisson ratio, thermal expansion coefficient)",
+   "category": "PropMaterial",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PropMaterial.GetMaterial",
+   "description": "Get material type and metadata (MatType, Color, Notes, GUID) for an existing material",
+   "category": "PropMaterial",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PropMaterial.GetNameList",
+   "description": "Get names of all material properties defined in the model",
+   "category": "PropMaterial",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PropMaterial.GetOSteel_1",
+   "description": "",
+   "category": "General",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PropMaterial.GetTypeOAPI",
+   "description": "Get the material type (eMatType) for a material property",
+   "category": "PropMaterial",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PropMaterial.GetWeightAndMass",
+   "description": "",
+   "category": "General",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PropMaterial.SetMPIsotropic",
+   "description": "Set isotropic mechanical properties (E, Poisson, thermal coeff)",
+   "category": "PropMaterial",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PropMaterial.SetMaterial",
+   "description": "Define or modify a material by name and type",
+   "category": "PropMaterial",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PropMaterial.SetOConcrete_1",
+   "description": "Set concrete design properties (fc, lightweight flag, stress-strain model)",
+   "category": "PropMaterial",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PropMaterial.SetOSteel_1",
+   "description": "Set steel design properties (yield/ultimate strengths, stress-strain model)",
+   "category": "PropMaterial",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.PropMaterial.SetWeightAndMass",
+   "description": "Set weight per unit volume and mass per unit volume",
+   "category": "PropMaterial",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.RespCombo.Add",
+   "description": "Create a new response combination (linear, envelope, SRSS, etc.)",
+   "category": "RespCombo",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.RespCombo.AddDesignDefaultCombos",
+   "description": "Add default design combinations by material type",
+   "category": "RespCombo",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.RespCombo.ChangeName",
+   "description": "Rename an existing load combination",
+   "category": "RespCombo",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.RespCombo.Count",
+   "description": "Get total number of load combinations",
+   "category": "RespCombo",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.RespCombo.Delete",
+   "description": "Delete an existing load combination",
+   "category": "RespCombo",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.RespCombo.DeleteCase",
+   "description": "Remove a load case or combo from a combination",
+   "category": "RespCombo",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.RespCombo.GetCaseList",
+   "description": "Query the load cases and scale factors in a combination",
+   "category": "RespCombo",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.RespCombo.GetNameList",
+   "description": "Get names of all load combinations defined in the model",
+   "category": "RespCombo",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.RespCombo.GetTypeOAPI",
+   "description": "Get the type of a load combination",
+   "category": "RespCombo",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.RespCombo.SetCaseList",
+   "description": "Add a load case to a response combination with scale factor",
+   "category": "RespCombo",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.RespCombo.SetTypeOAPI",
+   "description": "Set the type of a load combination",
+   "category": "RespCombo",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.Results.AreaForceShell",
+   "description": "",
+   "category": "General",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.Results.AreaStressShell",
+   "description": "Extract shell element stresses (S11, S22, S12 at top/bottom, principal, Von Mises)",
+   "category": "Analysis_Results",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.Results.BaseReact",
+   "description": "Extract total base reactions (forces and moments at reporting point)",
+   "category": "Analysis_Results",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.Results.FrameForce",
+   "description": "Extract frame internal forces (P, V2, V3, T, M2, M3) at stations",
+   "category": "Analysis_Results",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.Results.JointDispl",
+   "description": "Extract joint displacement results (translations and rotations)",
+   "category": "Analysis_Results",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.Results.JointReact",
+   "description": "Extract joint reaction forces at restrained joints",
+   "category": "Analysis_Results",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.Results.ModalParticipatingMassRatios",
+   "description": "Extract modal participating mass ratios (individual and cumulative per DOF)",
+   "category": "Analysis_Results",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.Results.ModalPeriod",
+   "description": "Extract modal periods, frequencies, circular frequencies, and eigenvalues",
+   "category": "Analysis_Results",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.Results.ModeShape",
+   "description": "Extract modal displacements (mode shapes) at point elements",
+   "category": "Analysis_Results",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.Results.Setup.DeselectAllCasesAndCombosForOutput",
+   "description": "Clear all load cases and combinations from the output selection",
+   "category": "Analysis_Results",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.Results.Setup.SetCaseSelectedForOutput",
+   "description": "Select or deselect a load case for results output",
+   "category": "Analysis_Results",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.Results.Setup.SetComboSelectedForOutput",
+   "description": "Select or deselect a load combination for results output",
+   "category": "Analysis_Results",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.SelectObj.ClearSelection",
+   "description": "Deselect all currently selected objects",
+   "category": "Select",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.SelectObj.CoordinateRange",
+   "description": "Select objects within a coordinate bounding box",
+   "category": "Select",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.SelectObj.GetSelected",
+   "description": "Get all currently selected objects by type and name",
+   "category": "Select",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.SetModelIsLocked",
+   "description": "Lock or unlock the model",
+   "category": "General_Functions",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.SetPresentUnits",
+   "description": "Set the current display units for the model",
+   "category": "General_Functions",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.SourceMass.Count",
+   "description": "Get total number of mass sources defined in the model.",
+   "category": "Mass_Source",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.SourceMass.GetDefault",
+   "description": "Retrieve the name of the default mass source currently set in the model.",
+   "category": "Mass_Source",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.SourceMass.GetMassSource",
+   "description": "Retrieve mass source configuration including element/load contributions and scale factors.",
+   "category": "Mass_Source",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.SourceMass.GetNameList",
+   "description": "",
+   "category": "General",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.SourceMass.SetDefault",
+   "description": "",
+   "category": "General",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.SourceMass.SetMassSource",
+   "description": "Add or reinitialize a mass source definition specifying which elements and load patterns contribute to model mass.",
+   "category": "Mass_Source",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.View.RefreshView",
+   "description": "Redraw and refresh the SAP2000 model view",
+   "category": "View",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapObject.GetProgramInfo",
+   "description": "",
+   "category": "General",
+   "verification_status": "verified"
+  }
+ ]
+}

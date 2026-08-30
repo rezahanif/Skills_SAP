@@ -2,7 +2,15 @@
   "id": "sap2000-mcp",
   "name": "CSI SAP2000 Structural Engineering",
   "category": "Structural Engineering",
-  "tags": ["sap2000", "structural", "civil", "mcp", "csi", "fem", "analysis"],
+  "tags": [
+    "sap2000",
+    "structural",
+    "civil",
+    "mcp",
+    "csi",
+    "fem",
+    "analysis"
+  ],
   "author": {
     "name": "AiConnect Official",
     "url": "https://aiconnect.fun",
@@ -12,8 +20,7 @@
   "license": "MIT",
   "homepage": "https://github.com/rezahanif/Skills_SAP",
   "assets": {
-    "icon": "assets/logo.svg",
-    "banner": "assets/banner.png"
+    "icon": "assets/logo.svg"
   },
   "capabilities": [
     "Define structural frames, joints, and material properties",

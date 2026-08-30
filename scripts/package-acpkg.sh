@@ -1,42 +1,16 @@
 #!/usr/bin/env bash
+# Shim to the shared AiConnect packager. Do NOT add connector-specific logic here:
+# seven divergent copies of this script is what produced N27 (sap2000 silently shipped
+# without scripts/, leaving five tools inert) and the revit entry-path mismatch.
+# Declare payload in this connector's manifest.json under "package":
+#     "package": { "include": ["run_server.py", "mcp_server"], "exclude": [] }
 set -euo pipefail
-
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-DIST_DIR="$ROOT_DIR/dist"
-PKG_NAME="sap2000-mcp-1.0.0-windows-x64.acpkg"
-
-echo "=== Packaging AiConnect SAP2000 Connector (.acpkg) ==="
-mkdir -p "$DIST_DIR"
-
-STAGE_DIR="$(mktemp -d)"
-trap 'rm -rf "$STAGE_DIR"' EXIT
-
-# Copy manifest, marketplace, and tutorial
-cp "$ROOT_DIR/manifest.json" "$STAGE_DIR/"
-cp "$ROOT_DIR/marketplace.json" "$STAGE_DIR/"
-cp "$ROOT_DIR/TUTORIAL.md" "$STAGE_DIR/"
-cp "$ROOT_DIR/run_server.py" "$STAGE_DIR/"
-
-# Copy assets
-if [ -d "$ROOT_DIR/assets" ]; then
-    mkdir -p "$STAGE_DIR/assets"
-    cp -r "$ROOT_DIR/assets/"* "$STAGE_DIR/assets/" || true
+AICONNECT_ROOT="${AICONNECT_ROOT:-$(cd "$ROOT_DIR/../aiconnector" 2>/dev/null && pwd || true)}"
+SHARED="$AICONNECT_ROOT/scripts/release/package-acpkg.py"
+if [ ! -f "$SHARED" ]; then
+  echo "error: shared packager not found at '$SHARED'." >&2
+  echo "       Set AICONNECT_ROOT to the aiconnector checkout." >&2
+  exit 1
 fi
-
-# Copy server code
-if [ -d "$ROOT_DIR/mcp_server" ]; then
-    mkdir -p "$STAGE_DIR/mcp_server"
-    cp -r "$ROOT_DIR/mcp_server/"* "$STAGE_DIR/mcp_server/"
-fi
-
-# Copy API folder if present
-if [ -d "$ROOT_DIR/API" ]; then
-    mkdir -p "$STAGE_DIR/API"
-    cp -r "$ROOT_DIR/API/"* "$STAGE_DIR/API/" || true
-fi
-
-# Create .acpkg (ZIP archive)
-(cd "$STAGE_DIR" && zip -r "$DIST_DIR/$PKG_NAME" .)
-
-echo "Package created at: $DIST_DIR/$PKG_NAME"
-sha256sum "$DIST_DIR/$PKG_NAME"
+exec python3 "$SHARED" "$ROOT_DIR" "$@"
