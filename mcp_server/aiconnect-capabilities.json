@@ -1446,6 +1446,105 @@
    "description": "",
    "category": "General",
    "verification_status": "verified"
+  },
+  {
+   "name": "connect_sap2000",
+   "aliases": [
+    "attach to a running sap2000",
+    "start a structural analysis session",
+    "open the com connection"
+   ]
+  },
+  {
+   "name": "disconnect_sap2000",
+   "aliases": [
+    "release the com resources",
+    "end the sap2000 session"
+   ]
+  },
+  {
+   "name": "execute_sap_function",
+   "aliases": [
+    "call an oapi function by dot path",
+    "invoke a sap2000 api method directly",
+    "single api call against sapmodel"
+   ]
+  },
+  {
+   "name": "get_error_hints",
+   "aliases": [
+    "recovery steps for an api return code",
+    "what this sap2000 error means"
+   ]
+  },
+  {
+   "name": "get_model_info",
+   "aliases": [
+    "frame joint and area counts",
+    "active units and model path",
+    "structural model summary",
+    "verify session state"
+   ]
+  },
+  {
+   "name": "list_api_categories",
+   "aliases": [
+    "browse oapi documentation categories",
+    "explore the sap2000 api surface"
+   ]
+  },
+  {
+   "name": "list_registry_categories",
+   "aliases": [
+    "registry coverage per category",
+    "which api areas are explored"
+   ]
+  },
+  {
+   "name": "list_scripts",
+   "aliases": [
+    "saved script library",
+    "which sap2000 scripts already exist"
+   ]
+  },
+  {
+   "name": "load_script",
+   "aliases": [
+    "open a stored script",
+    "retrieve script code from the library"
+   ]
+  },
+  {
+   "name": "query_function_registry",
+   "aliases": [
+    "verified call patterns for an api function",
+    "known pitfalls of a sap2000 function",
+    "has this api function been proven"
+   ]
+  },
+  {
+   "name": "register_verified_function",
+   "aliases": [
+    "record a working api call pattern",
+    "add a proven function to the registry"
+   ]
+  },
+  {
+   "name": "run_sap_script",
+   "aliases": [
+    "automate sap2000 with python",
+    "sandboxed script against the structural model",
+    "batch of api calls in one run"
+   ]
+  },
+  {
+   "name": "search_api_docs",
+   "aliases": [
+    "find the oapi function for an operation",
+    "sap2000 api reference lookup",
+    "signature and parameters of an api function",
+    "which api call assigns this"
+   ]
   }
  ]
 }

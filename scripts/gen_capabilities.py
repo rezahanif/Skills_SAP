@@ -37,6 +37,29 @@ sys.path.insert(0, str(ROOT / "mcp_server"))
 
 OUT = ROOT / "mcp_server" / "aiconnect-capabilities.json"
 EXEC_TOOL = "execute_sap_function"
+
+# --- connector-shipped alias phrasings -------------------------------------
+# Authored intent phrasings live in ONE file next to the generated index, and
+# this generator is the only thing that copies them. The gateway folds them into
+# its BM25 haystack only (ToolDoc::add_search_text) - never into the summary the
+# model is shown, and never into the embedding.
+#
+# They are emitted as alias-only entries naming LISTED tools. shadow_docs skips a
+# capability whose name collides with a real tool (the callable one wins), but
+# merge_capability_aliases harvests its phrasings onto that tool first, so this is
+# exactly where aliases pay. An older gateway simply skips them: backward compatible.
+ALIAS_FILE = OUT.parent / "aiconnect_aliases.json"
+
+
+def alias_entries(taken: set) -> list:
+    """Alias-only entries for tools that ARE listed. No description - the real
+    one arrives over tools/list."""
+    if not ALIAS_FILE.is_file():
+        return []
+    aliases = json.loads(ALIAS_FILE.read_text(encoding="utf-8")).get("aliases", {})
+    return [{"name": n, "aliases": aliases[n]}
+            for n in sorted(aliases) if n not in taken and aliases[n]]
+
 MAX_DESC = 200
 
 # Tool names that are real, listed and callable. A shadow entry may never shadow one.
@@ -135,8 +158,12 @@ def main() -> None:
         del merged[n]
 
     caps = sorted(merged.values(), key=lambda c: c["name"])
+    # `caps` stays the capability list, so every count below is unchanged by
+    # aliases; the alias-only entries exist purely as a search channel.
+    enriched = alias_entries({c["name"] for c in caps})
     OUT.write_text(json.dumps(
-        {"exec_tool": EXEC_TOOL, "capabilities": caps}, indent=1) + "\n")
+        {"exec_tool": EXEC_TOOL, "capabilities": caps + enriched}, indent=1) + "\n")
+    print(f"alias-only entries for listed tools: {len(enriched)}")
 
     verified = sum(1 for c in caps if c["verification_status"] == "verified")
     print(f"docs {len(docs)}  registry {len(reg)}  merged {len(caps)}"
