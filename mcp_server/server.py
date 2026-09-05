@@ -45,29 +45,23 @@ logger = logging.getLogger(__name__)
 # guidance only — per-tool detail stays in tool descriptions.
 
 SERVER_INSTRUCTIONS = """\
-SAP2000-MCP drives SAP2000 structural analysis via local COM (Windows only).
+SAP2000-MCP automates structural analysis and design via local COM (Windows).
 
-Workflow order: connect_sap2000 first (attach_to_existing=True is the normal \
-path), verify with get_model_info, then work, then disconnect_sap2000 when done.
+Recommended 10-Step Structural Workflow:
+1. Connect: connect_sap2000(attach_to_existing=True)
+2. Initialize: init_structural_model(units="kN_m_C", template="blank")
+3. Materials: define_material(name, material_type="steel"|"concrete", fy_mpa=..., fc_mpa=...)
+4. Sections: define_frame_section(name, material, shape_type="I"|"Tube"|"Rectangle"|"Circle", dimensions)
+5. Geometry (Arbitrary 3D): batch_create_frames(frames=[{"start": [x1,y1,z1], "end": [x2,y2,z2], "section": ...}])
+6. Supports: assign_supports(support_type="fixed"|"pinned"|"roller") — auto-grounds base joints
+7. Loading: apply_distributed_load (gravity), apply_wind_load (SNI 1727/ASCE 7), define_response_spectrum (SNI 1726/ASCE 7)
+8. Combinations: define_load_combination(name, cases={"DEAD": 1.2, "LIVE": 1.6, ...})
+9. Solve & Verify: run_analysis(), run_code_design(code_type="steel"|"concrete"), run_pushover_analysis()
+10. Results: get_analysis_results(result_type="reactions"|"displacements"|"modal"|"frame_forces"|"pushover")
 
-Match the operation to the tool:
-- Known API call → execute_sap_function with a dot-path ("SapModel.FrameObj.AddByCoord").
-  ByRef outputs come back in output_params; return_value 0 = success.
-- Multi-step or computed logic → run_sap_script. The sandbox pre-injects SapModel,
-  SapObject, and a `result` dict — write outputs there. No file I/O; allowed imports:
-  math, json, datetime, decimal, fractions, collections, itertools, functools, typing.
-  Timeout 120 s — split long work into smaller scripts.
-
-Before writing ANY unfamiliar call: search_api_docs for the function name/signature,
-then query_function_registry to see if a verified pattern exists. After a successful
-novel call, register_verified_function records it for future agents.
-
-On any failure: read error_code + suggested_actions from the envelope, or call
-get_error_hints with that code. NOT_CONNECTED → connect first; PATH_NOT_FOUND →
-re-search docs; SCRIPT_TIMEOUT → split the script.
-
-Units come back in whatever the model's present units are (get_model_info reports them) \
-— do not assume kN/m/in; convert explicitly when mixing sources.\
+Disconnect: disconnect_sap2000(save_model=False, exit_application=False) when finished.
+For raw OAPI operations: search_api_docs, query_function_registry, or execute_sap_function.
+On errors: query get_error_hints(error_code).
 """
 
 mcp = FastMCP(
@@ -121,12 +115,13 @@ def connect_sap2000(
 )
 def disconnect_sap2000(
     save_model: bool = Field(default=False, description="True = save the model before exit; False = discard unsaved changes."),
+    exit_application: bool | None = Field(default=None, description="True = force close SAP2000; False = detach and preserve running instance; None = auto (only close if launched by MCP)."),
 ) -> dict:
     """Disconnect from SAP2000 and optionally save the current model.
 
     Always call this when done to release COM resources.
     """
-    return bridge.disconnect(save_model=save_model)
+    return bridge.disconnect(save_model=save_model, exit_application=exit_application)
 
 
 @mcp.tool(
@@ -142,6 +137,510 @@ def get_model_info() -> dict:
     orphaned thread may have mutated the model.
     """
     return bridge.get_model_info()
+
+
+@mcp.tool(
+    title="Save Model",
+    annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False),
+)
+def save_model(
+    file_path: str | None = Field(
+        default=None,
+        description="Target .sdb file path. If omitted, saves to the current file path or managed temporary directory.",
+    ),
+) -> dict:
+    """Save the current SAP2000 model to disk.
+
+    SAP2000 requires the model to be saved before RunAnalysis can be executed.
+    Returns: {saved: bool, file_path: str, message: str}.
+    """
+    return bridge.save_model(file_path=file_path)
+
+
+@mcp.tool(
+    title="Run Analysis",
+    annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False),
+)
+def run_analysis() -> dict:
+    """Run the finite element structural solver on the active model.
+
+    Automatically saves the model if unsaved, executes the solver,
+    and refreshes the 3D GUI view.
+    Returns: {success: bool, return_code: int, is_locked: bool, message: str}.
+    """
+    return bridge.run_analysis()
+
+
+@mcp.tool(
+    title="Set Model Lock",
+    annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=True),
+)
+def set_model_lock(
+    locked: bool = Field(
+        default=True,
+        description="True = lock model; False = unlock model (clears analysis results to allow editing geometry/properties).",
+    ),
+) -> dict:
+    """Lock or unlock the SAP2000 model.
+
+    Set locked=False before attempting to add/modify geometry, materials, or loads
+    in a model that has already been solved.
+    Returns: {locked: bool, return_code: int, message: str}.
+    """
+    return bridge.set_model_lock(locked=locked)
+
+
+@mcp.tool(
+    title="Get Analysis Results",
+    annotations=ToolAnnotations(readOnlyHint=True),
+)
+def get_analysis_results(
+    result_type: str = Field(
+        description='Type of results to query: "reactions" (base shear/gravity/moments), '
+        '"displacements" (joint translation/rotation), "modal" (periods/frequencies/mass participation), '
+        '"pushover" (capacity curve Vb vs roof displacement), or "frame_forces" (axial/shear/moments).',
+    ),
+    case_or_combo: str = Field(
+        default="DEAD",
+        description='Load case or combination name, e.g. "DEAD", "LIVE", "WIND_X", "COMB1", "MODAL".',
+    ),
+    object_type: str = Field(
+        default="base",
+        description='Target object category: "base" (reactions), "joint" (displacements), or "frame" (member forces).',
+    ),
+    object_id: str | None = Field(
+        default=None,
+        description='Optional specific joint label or frame label (e.g. "1", "30"). If omitted for joint/frame, defaults to the first available.',
+    ),
+) -> dict:
+    """Extract structured finite element analysis results with explicit engineering units.
+
+    Translates raw SAP2000 COM arrays into clean, labeled JSON dictionaries.
+    Configures Results.Setup filters automatically.
+    Returns: structured result dict with labeled fields and unit names.
+    """
+    return bridge.get_analysis_results(
+        result_type=result_type,
+        case_or_combo=case_or_combo,
+        object_type=object_type,
+        object_id=object_id,
+    )
+
+
+@mcp.tool(
+    title="Initialize Structural Model",
+    annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=True),
+)
+def init_structural_model(
+    units: str = Field(
+        default="kN_m_C",
+        description='Standard engineering units name, e.g. "kN_m_C", "lb_in_F", "kip_ft_F", "N_mm_C".',
+    ),
+    template: str = Field(
+        default="blank",
+        description='Model template type, e.g. "blank" (default).',
+    ),
+) -> dict:
+    """Initialize a clean new SAP2000 structural model with explicit units.
+
+    Unlocks the model, initializes the database with specified units, and creates a blank canvas.
+    Returns: {success: bool, units: str, unit_code: int, message: str}.
+    """
+    return bridge.init_structural_model(units=units, template=template)
+
+
+@mcp.tool(
+    title="Define Material",
+    annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False),
+)
+def define_material(
+    name: str = Field(
+        description='Unique material name, e.g. "A992Fy50", "fc_30MPa", "BJ37", "Rebar_420".',
+    ),
+    material_type: str = Field(
+        default="steel",
+        description='Material category: "steel", "concrete", or "rebar".',
+    ),
+    standard_grade: str | None = Field(
+        default=None,
+        description='Optional standard library grade identifier, e.g. "A992Fy50", "A36", "4000Psi".',
+    ),
+    fy_mpa: float | None = Field(
+        default=None,
+        description="Yield strength Fy in MPa (for steel or rebar, e.g. 345.0 for A992, 240.0 for BJ37).",
+    ),
+    fu_mpa: float | None = Field(
+        default=None,
+        description="Ultimate tensile strength Fu in MPa (e.g. 450.0).",
+    ),
+    fc_mpa: float | None = Field(
+        default=None,
+        description="Compressive cylinder strength f'c in MPa (for concrete, e.g. 30.0).",
+    ),
+    e_mpa: float | None = Field(
+        default=None,
+        description="Modulus of elasticity E in MPa (e.g. 200000.0 for steel; calculated automatically for concrete if omitted).",
+    ),
+    unit_weight_kn_m3: float | None = Field(
+        default=None,
+        description="Weight density in kN/m3 (default 78.5 for steel, 24.0 for concrete).",
+    ),
+) -> dict:
+    """Define a structural material with standard presets or custom mechanical properties.
+
+    Sets constitutive properties, elasticity modulus E, Poisson's ratio, and unit weight.
+    Returns: {success: bool, material_name: str, material_type: str, mechanical_properties: dict, message: str}.
+    """
+    return bridge.define_material(
+        name=name,
+        material_type=material_type,
+        standard_grade=standard_grade,
+        fy_mpa=fy_mpa,
+        fu_mpa=fu_mpa,
+        fc_mpa=fc_mpa,
+        e_mpa=e_mpa,
+        unit_weight_kn_m3=unit_weight_kn_m3,
+    )
+
+
+@mcp.tool(
+    title="Define Frame Section",
+    annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False),
+)
+def define_frame_section(
+    name: str = Field(
+        description='Unique cross-section name, e.g. "W14X90", "HSS6X6X3/8", "COL_400X400".',
+    ),
+    material: str = Field(
+        default="A992Fy50",
+        description='Material name assigned to this section, e.g. "A992Fy50", "A36", "4000Psi".',
+    ),
+    shape_type: str = Field(
+        default="I",
+        description='Cross-section shape category: "I" (wide flange), "Tube" (hollow box/HSS), '
+        '"Rectangle" (solid concrete), or "Circle" (pipe/round column).',
+    ),
+    dimensions: dict = Field(
+        default_factory=dict,
+        description='Dimensional parameters in model length units. '
+        'For "I": {"depth", "flange_width", "flange_thick", "web_thick"}. '
+        'For "Tube": {"depth", "width", "thick"}. '
+        'For "Rectangle": {"depth", "width"}. '
+        'For "Circle": {"diameter"}.',
+    ),
+) -> dict:
+    """Define a structural frame cross-section with automatic shape mapping.
+
+    Unifies SetISection, SetTube, SetRectangle, and SetCircle into a single self-describing tool.
+    Returns: {success: bool, section_name: str, shape_type: str, material: str, message: str}.
+    """
+    return bridge.define_frame_section(
+        name=name,
+        material=material,
+        shape_type=shape_type,
+        dimensions=dimensions,
+    )
+
+
+@mcp.tool(
+    title="Batch Create Frames",
+    annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False),
+)
+def batch_create_frames(
+    frames: list[dict] = Field(
+        description='List of frame element definitions with arbitrary 3D spatial geometry: '
+        '[{"start": [x1, y1, z1], "end": [x2, y2, z2], "section": "COL_400", "label": "optional_id"}, ...]. '
+        'Supports orthogonal grids, irregular L-shapes, diagonal braces, slanted columns, and pitched roofs.',
+    ),
+) -> dict:
+    """Create multiple structural frame elements with arbitrary 3D spatial geometry in a single call.
+
+    Eliminates dozens of roundtrips when generating 3D building geometry.
+    Returns: {success: bool, created_count: int, failed_count: int, frame_ids: list, message: str}.
+    """
+    return bridge.batch_create_frames(frames=frames)
+
+
+@mcp.tool(
+    title="Assign Supports",
+    annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False),
+)
+def assign_supports(
+    joint_ids: list[str] | None = Field(
+        default=None,
+        description="Optional list of target joint IDs. If omitted, automatically selects and grounds all joints at ground level (Z = minimum Z).",
+    ),
+    support_type: str = Field(
+        default="fixed",
+        description='Support restraint preset: "fixed" (all 6 DOFs restrained), "pinned" (3 translations restrained), or "roller" (vertical translation only).',
+    ),
+    custom_restraints: list[bool] | None = Field(
+        default=None,
+        description="Optional 6 booleans [U1, U2, U3, R1, R2, R3] when support_type is 'custom'.",
+    ),
+) -> dict:
+    """Assign boundary support conditions (Fixed, Pinned, Roller) to structural foundation joints.
+
+    By default auto-detects all base joints at minimum Z elevation and assigns rigid fixed moment foundations.
+    Returns: {success: bool, support_type: str, assigned_count: int, joint_ids: list, message: str}.
+    """
+    return bridge.assign_supports(
+        joint_ids=joint_ids,
+        support_type=support_type,
+        custom_restraints=custom_restraints,
+    )
+
+
+@mcp.tool(
+    title="Apply Distributed Load",
+    annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False),
+)
+def apply_distributed_load(
+    frame_ids: list[str] = Field(
+        description='List of target frame element IDs/labels to load, e.g. ["1", "2", "3"].',
+    ),
+    load_pattern: str = Field(
+        default="DEAD",
+        description='Target load pattern name, e.g. "DEAD", "LIVE", "SNOW". Created if it does not exist.',
+    ),
+    load_value: float = Field(
+        default=0.0,
+        description='Uniform line load intensity in current model units (e.g. kN/m or kip/ft).',
+    ),
+    direction: str = Field(
+        default="gravity",
+        description='Load direction: "gravity" (downwards), "global_z" (upwards), "global_x", or "global_y".',
+    ),
+) -> dict:
+    """Apply uniform distributed line loads across multiple structural frame members.
+
+    Eliminates the need for raw integer direction flags.
+    Returns: {success: bool, applied_count: int, frame_ids: list, message: str}.
+    """
+    return bridge.apply_distributed_load(
+        frame_ids=frame_ids,
+        load_pattern=load_pattern,
+        load_value=load_value,
+        direction=direction,
+    )
+
+
+@mcp.tool(
+    title="Define Load Combination",
+    annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False),
+)
+def define_load_combination(
+    name: str = Field(
+        description='Unique combination identifier, e.g. "COMB1_1.2D_1.6L", "COMB2_SEIS_X".',
+    ),
+    combo_type: str = Field(
+        default="linear_additive",
+        description='Combination formulation: "linear_additive" (factored sum), "envelope" (max/min forces), or "absolute_additive".',
+    ),
+    cases: dict[str, float] = Field(
+        default_factory=dict,
+        description='Mapping of load case/pattern names to scale factors, e.g. {"DEAD": 1.2, "LIVE": 1.6}.',
+    ),
+) -> dict:
+    """Define a structural design load combination with factored load cases.
+
+    Configures ultimate strength or serviceability combinations for finite element evaluation and design checks.
+    Returns: {success: bool, combo_name: str, combo_type: str, cases_and_factors: dict, message: str}.
+    """
+    return bridge.define_load_combination(
+        name=name,
+        combo_type=combo_type,
+        cases=cases,
+    )
+
+
+@mcp.tool(
+    title="Run Code Design",
+    annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False),
+)
+def run_code_design(
+    code_type: str = Field(
+        default="steel",
+        description='Design code module: "steel" (AISC 360 / Eurocode 3) or "concrete" (ACI 318 / Eurocode 2).',
+    ),
+    design_code: str | None = Field(
+        default=None,
+        description='Optional design code standard name, e.g. "AISC360_16", "Eurocode_3_2005". Omit for model default.',
+    ),
+) -> dict:
+    """Execute structural code design verification and extract Demand-to-Capacity (D/C) stress ratios.
+
+    Verifies if structural members satisfy building code safety limits (D/C <= 1.0 = PASS).
+    Automatically runs finite element analysis first if the model is not solved.
+    Returns: {success: bool, design_status: "PASS"|"FAIL", max_dc_ratio: float, critical_member: str, failing_members: list, message: str}.
+    """
+    return bridge.run_code_design(
+        code_type=code_type,
+        design_code=design_code,
+    )
+
+
+@mcp.tool(
+    title="Apply Wind Load",
+    annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False),
+)
+def apply_wind_load(
+    wind_speed: float = Field(
+        default=38.0,
+        description="Basic design wind speed V in m/s (e.g. 38 m/s per Indonesian SNI 1727:2020 / ASCE 7-16).",
+    ),
+    exposure_category: str = Field(
+        default="B",
+        description='Surface roughness exposure category: "B" (urban/suburban), "C" (open terrain), or "D" (coastal).',
+    ),
+    direction: str = Field(
+        default="X",
+        description='Lateral wind attack direction: "X" or "Y".',
+    ),
+    building_height: float | None = Field(
+        default=None,
+        description="Optional total building height in meters. Auto-detected from model joint coordinates if omitted.",
+    ),
+    building_width: float | None = Field(
+        default=None,
+        description="Optional windward facade width in meters. Auto-detected if omitted.",
+    ),
+    importance_factor: float = Field(
+        default=1.0,
+        description="Wind importance factor I_w (1.0 for Risk Category II).",
+    ),
+    gust_factor: float = Field(
+        default=0.85,
+        description="Gust effect factor G (0.85 for rigid structures).",
+    ),
+    frame_ids: list[str] | None = Field(
+        default=None,
+        description="Optional explicit list of target frame IDs to receive line load. If omitted, windward facade frames are auto-detected.",
+    ),
+) -> dict:
+    """Calculate and assign code-compliant wind pressure and frame line loads per SNI 1727:2020 / ASCE 7-16.
+
+    Computes velocity pressure qz, applies gust and external pressure coefficients (Cp = +0.8 windward, -0.5 leeward),
+    and assigns distributed loads to windward frames under pattern WIND_X or WIND_Y.
+    Returns: {success: bool, load_pattern: str, design_pressure_kpa: float, line_load_kn_m: float, applied_frames: list, message: str}.
+    """
+    return bridge.apply_wind_load(
+        wind_speed=wind_speed,
+        exposure_category=exposure_category,
+        direction=direction,
+        building_height=building_height,
+        building_width=building_width,
+        importance_factor=importance_factor,
+        gust_factor=gust_factor,
+        frame_ids=frame_ids,
+    )
+
+
+@mcp.tool(
+    title="Define Response Spectrum",
+    annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False),
+)
+def define_response_spectrum(
+    name: str = Field(
+        default="SNI_1726_2019",
+        description='Unique response spectrum function name, e.g. "SNI_1726_2019", "ASCE7_RS".',
+    ),
+    standard: str = Field(
+        default="SNI_1726_2019",
+        description='Design code standard: "SNI_1726_2019" or "ASCE7_16".',
+    ),
+    site_class: str = Field(
+        default="D",
+        description='Site soil classification: "A" (hard rock), "B" (rock), "C" (dense soil), "D" (stiff soil/sedang), "E" (soft soil).',
+    ),
+    ss: float = Field(
+        default=0.90,
+        description="Mapped MCE_R short-period spectral acceleration parameter S_s (g).",
+    ),
+    s1: float = Field(
+        default=0.40,
+        description="Mapped MCE_R 1-second spectral acceleration parameter S_1 (g).",
+    ),
+    r_factor: float = Field(
+        default=8.0,
+        description="Response modification coefficient R (e.g. 8.0 for Special Moment Frames).",
+    ),
+    importance_factor: float = Field(
+        default=1.0,
+        description="Seismic importance factor I_e (1.0 for Risk Category II).",
+    ),
+    direction: str = Field(
+        default="both",
+        description='Response spectrum load case direction: "X", "Y", or "both".',
+    ),
+    damping: float = Field(
+        default=0.05,
+        description="Inherent modal damping ratio (default 0.05 = 5%).",
+    ),
+) -> dict:
+    """Generate smooth design response spectrum curves and dynamic load cases per SNI 1726:2019 / ASCE 7-16.
+
+    Calculates site amplification factors (Fa, Fv), design parameters (SDS, SD1), corner periods (T0, Ts),
+    registers the smooth spectral curve in SAP2000, and creates scaled dynamic load cases (RS_X, RS_Y) with scale factor g * Ie / R.
+    Returns: {success: bool, function_name: str, parameters: dict, load_cases_created: list, message: str}.
+    """
+    return bridge.define_response_spectrum(
+        name=name,
+        standard=standard,
+        site_class=site_class,
+        ss=ss,
+        s1=s1,
+        r_factor=r_factor,
+        importance_factor=importance_factor,
+        direction=direction,
+        damping=damping,
+    )
+
+
+@mcp.tool(
+    title="Run Pushover Analysis",
+    annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False),
+)
+def run_pushover_analysis(
+    load_case_name: str = Field(
+        default="PUSHOVER_X",
+        description='Pushover analysis load case name, e.g. "PUSHOVER_X", "PUSHOVER_Y".',
+    ),
+    direction: str = Field(
+        default="X",
+        description='Push direction: "X" or "Y".',
+    ),
+    target_displacement: float = Field(
+        default=0.30,
+        description="Target roof monitored displacement in meters (e.g. 0.30 m).",
+    ),
+    control_joint: str | None = Field(
+        default=None,
+        description="Control joint ID at the roof. Auto-detected at highest model elevation if None.",
+    ),
+    initial_gravity_case: str = Field(
+        default="PUSH_GRAV",
+        description='Nonlinear static gravity pre-load case name, e.g. "PUSH_GRAV".',
+    ),
+    max_steps: int = Field(
+        default=50,
+        description="Maximum number of pushover incremental steps to solve and record.",
+    ),
+) -> dict:
+    """Execute nonlinear static pushover analysis and extract capacity curve and ductility metrics.
+
+    Configures nonlinear static gravity pre-load (P-Delta), sets up monotonic displacement-controlled
+    lateral push to target roof drift, executes the nonlinear solver, and extracts the full capacity curve (Vb vs Delta_roof).
+    Returns: {success: bool, pushover_case: str, max_base_shear_kn: float, max_roof_displacement_m: float, structural_ductility_ratio_mu: float, capacity_curve: list, message: str}.
+    """
+    return bridge.run_pushover_analysis(
+        load_case_name=load_case_name,
+        direction=direction,
+        target_displacement=target_displacement,
+        control_joint=control_joint,
+        initial_gravity_case=initial_gravity_case,
+        max_steps=max_steps,
+    )
 
 
 @mcp.tool(

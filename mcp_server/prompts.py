@@ -24,12 +24,12 @@ def register(mcp) -> None:
         return _msg(
             f"Build a SAP2000 model for: {description}\n"
             "Workflow:\n"
-            "1. connect_sap2000 (attach_to_existing=True) and get_model_info to confirm state\n"
-            "2. search_api_docs for each object type needed (FrameObj, PointObj, AreaObj...)\n"
-            "3. Prefer run_sap_script with all geometry in one script — write counts/IDs into `result`\n"
-            "4. query_function_registry first; if a function is unverified, verify via execute_sap_function\n"
-            "5. register_verified_function for any novel API call that worked\n"
-            "6. get_model_info at the end and report element counts"
+            "1. connect_sap2000 (attach_to_existing=True) and get_model_info to confirm state & units\n"
+            "2. If model is locked: call set_model_lock(locked=False) to allow geometry definition\n"
+            "3. Generate structural members via run_sap_script or execute_sap_function\n"
+            "4. Call save_model to persist the model file to disk\n"
+            "5. Call run_analysis to execute the finite element solver\n"
+            "6. Call get_analysis_results to verify equilibrium and displacements"
         )
 
     @mcp.prompt(
@@ -40,11 +40,11 @@ def register(mcp) -> None:
         return _msg(
             f"Run a {analysis_type} analysis on the current model.\n"
             "Workflow:\n"
-            "1. connect_sap2000 → get_model_info (confirm connected + element counts)\n"
-            "2. search_api_docs 'Analyze' category for the run function\n"
-            "3. execute_sap_function the Analyze.Run call\n"
-            "4. search_api_docs the results category, then read displacements/reactions via execute_sap_function\n"
-            "5. Report key numbers with UNITS from get_model_info"
+            "1. connect_sap2000 -> get_model_info (confirm connected + element counts)\n"
+            "2. Call save_model to ensure model is saved\n"
+            "3. Call run_analysis tool (executes solver and updates locked state)\n"
+            "4. Call get_analysis_results(result_type='reactions', case_or_combo='DEAD') to verify\n"
+            "5. Report key numbers with units from get_analysis_results output"
         )
 
     @mcp.prompt(
@@ -55,11 +55,10 @@ def register(mcp) -> None:
         return _msg(
             f"Extract {what} from the current model.\n"
             "Workflow:\n"
-            "1. connect_sap2000 → get_model_info\n"
-            "2. search_api_docs for the results functions (JointDispl, BaseReact, FrameForce...)\n"
-            "3. query_function_registry — prefer verified patterns\n"
-            "4. run_sap_script looping over objects and filling `result`, OR direct execute_sap_function calls\n"
-            "5. Summarize as a table; flag any nonzero return codes"
+            "1. connect_sap2000 -> get_model_info (verify is_locked=True)\n"
+            "2. Call get_analysis_results with result_type ('reactions', 'displacements', 'modal', or 'frame_forces')\n"
+            "3. Specify case_or_combo and object_id if querying specific joints or frames\n"
+            "4. Read the structured, typed results dictionary with explicit units"
         )
 
     @mcp.prompt(
@@ -71,10 +70,10 @@ def register(mcp) -> None:
             f"A call failed with code {error_code}: {detail}\n"
             "Recovery:\n"
             "1. get_error_hints with that error_code\n"
-            "2. NOT_CONNECTED → connect_sap2000 then retry\n"
-            "3. PATH_NOT_FOUND → search_api_docs for the correct path; check SapModel./SapObject. prefix\n"
-            "4. API_RETURN_CODE → read output_params/details; verify argument order against docs\n"
-            "5. SCRIPT_TIMEOUT → split the script; afterwards get_model_info to check model integrity"
+            "2. NOT_CONNECTED -> connect_sap2000 then retry\n"
+            "3. PATH_NOT_FOUND -> search_api_docs for the correct path; check SapModel./SapObject. prefix\n"
+            "4. API_RETURN_CODE -> read output_params/details; verify argument order against docs\n"
+            "5. SCRIPT_TIMEOUT -> split the script; afterwards get_model_info to check model integrity"
         )
 
     @mcp.prompt(

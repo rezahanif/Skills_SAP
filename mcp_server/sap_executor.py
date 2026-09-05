@@ -54,7 +54,7 @@ def _resolve_com_path(root, path: str):
     return obj, parts[-1]
 
 
-def execute_function(function_path: str, args: list, description: str = "") -> dict:
+def execute_function(function_path: str, args: list | None = None, description: str = "") -> dict:
     """
     Execute a single SAP2000 API function.
 
@@ -93,6 +93,8 @@ def execute_function(function_path: str, args: list, description: str = "") -> d
         root = bridge.sap_model
         relative_path = function_path
 
+    args = args or []
+
     try:
         parent, method_name = _resolve_com_path(root, relative_path)
         method = getattr(parent, method_name)
@@ -120,7 +122,9 @@ def execute_function(function_path: str, args: list, description: str = "") -> d
         return_value = result[-1]           # ret_code is ALWAYS last
         output_params = list(result[:-1])   # All ByRef outputs before it
 
-    success = (return_value == 0) if isinstance(return_value, int) else True
+    # Most SAP2000 API calls return 0 on success.
+    # Creation methods (e.g. AddByCoord), counts, and boolean results return 1 or positive values.
+    success = (return_value in (0, 1) or return_value > 0) if isinstance(return_value, int) else True
 
     if not success:
         raise APIReturnCodeError(
@@ -216,10 +220,14 @@ def _build_sandbox_globals() -> dict:
         "functools": functools,
     }
 
-    # Inject a writable temp directory for File.Save() calls
+    # Inject a writable temp directory for File.Save() calls and helper function
     temp_dir = _os.path.join(_tempfile.gettempdir(), "sap2000_scripts")
     _os.makedirs(temp_dir, exist_ok=True)
     sandbox["sap_temp_dir"] = temp_dir
+    sandbox["save_model"] = lambda name="model.sdb": (
+        bridge.sap_model.File.Save(_os.path.join(temp_dir, name)) if bridge.sap_model else -1
+    )
+    sandbox["get_temp_path"] = lambda name="model.sdb": _os.path.join(temp_dir, name)
 
     return sandbox
 
@@ -260,6 +268,7 @@ def run_script(script: str, description: str = "", save_as: str | None = None) -
       - SapModel   : COM reference to the active model
       - SapObject  : COM reference to the SAP2000 application
       - result     : dict — write output values here
+      - save_model : function(name="model.sdb") — saves model to sandbox temp directory
 
     Sandbox restrictions:
       - Only allowed modules can be imported
@@ -287,6 +296,7 @@ def run_script(script: str, description: str = "", save_as: str | None = None) -
     script_finished = threading.Event()
 
     def _run():
+        bridge._ensure_desktop()
         import comtypes
         comtypes.CoInitialize()
         old_stdout = sys.stdout

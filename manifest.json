@@ -41,6 +41,7 @@
     ],
     "exclude": [
       "scripts/package-acpkg.sh",
+      "scripts/package-acpkg.ps1",
       "scripts/gen_capabilities.py"
     ],
     "vendor": [
@@ -49,14 +50,33 @@
   },
   "tool_tiers": {
     "core": [
-      "search_api_docs",
-      "list_api_categories",
-      "list_registry_categories",
-      "list_scripts",
-      "query_function_registry",
+      "connect_sap2000",
+      "disconnect_sap2000",
+      "get_model_info",
+      "init_structural_model",
+      "define_material",
+      "define_frame_section",
+      "batch_create_frames",
+      "assign_supports",
+      "apply_distributed_load",
+      "define_load_combination",
+      "save_model",
+      "run_analysis",
+      "set_model_lock",
+      "get_analysis_results",
+      "run_code_design",
+      "apply_wind_load",
+      "define_response_spectrum",
+      "run_pushover_analysis",
       "execute_sap_function",
       "run_sap_script",
-      "get_model_info",
+      "list_scripts",
+      "load_script",
+      "search_api_docs",
+      "list_api_categories",
+      "query_function_registry",
+      "register_verified_function",
+      "list_registry_categories",
       "get_error_hints"
     ]
   }

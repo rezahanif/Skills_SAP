@@ -57,7 +57,7 @@
   },
   {
    "name": "SapModel.AreaObj.AddByCoord",
-   "description": "Crea un objeto de \u00e1rea (shell) definiendo sus v\u00e9rtices por coordenadas.",
+   "description": "Crea un objeto de \u00c3\u00a1rea (shell) definiendo sus v\u00c3\u00a9rtices por coordenadas.",
    "category": "AreaObj",
    "verification_status": "verified"
   },
@@ -123,7 +123,7 @@
   },
   {
    "name": "SapModel.AreaObj.SetLoadUniform",
-   "description": "Assign uniform distributed loads [F/L\u00b2] to area objects",
+   "description": "Assign uniform distributed loads [F/L\u00c2\u00b2] to area objects",
    "category": "Object_Model",
    "verification_status": "verified"
   },
@@ -136,6 +136,12 @@
   {
    "name": "SapModel.AreaObj.SetSpring",
    "description": "Assign area springs (Winkler foundation) to an area element",
+   "category": "Object_Model",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.AuditTest.SampleFunc",
+   "description": "JSON-RPC audit test function registration",
    "category": "Object_Model",
    "verification_status": "verified"
   },
@@ -195,7 +201,7 @@
   },
   {
    "name": "SapModel.DatabaseTables.GetAvailableTables",
-   "description": "Returns available (non-empty) tables with their import type \u2014 lighter query than GetAllTables",
+   "description": "Returns available (non-empty) tables with their import type \u00e2\u20ac\u201d lighter query than GetAllTables",
    "category": "Database_Tables",
    "verification_status": "verified"
   },
@@ -836,6 +842,42 @@
    "verification_status": "verified"
   },
   {
+   "name": "SapModel.LoadCases.StaticNonlinear.SetCase",
+   "description": "",
+   "category": "General",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.LoadCases.StaticNonlinear.SetGeometricNonlinearity",
+   "description": "",
+   "category": "General",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.LoadCases.StaticNonlinear.SetInitialCase",
+   "description": "",
+   "category": "General",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.LoadCases.StaticNonlinear.SetLoadApplication",
+   "description": "",
+   "category": "General",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.LoadCases.StaticNonlinear.SetLoads",
+   "description": "",
+   "category": "General",
+   "verification_status": "verified"
+  },
+  {
+   "name": "SapModel.LoadCases.StaticNonlinear.SetResultsSaved",
+   "description": "",
+   "category": "General",
+   "verification_status": "verified"
+  },
+  {
    "name": "SapModel.LoadPatterns.Add",
    "description": "Add a new load pattern to the model",
    "category": "Load_Patterns",
@@ -981,7 +1023,7 @@
   },
   {
    "name": "SapModel.PropArea.SetShell_1",
-   "description": "Define una propiedad de \u00e1rea tipo shell.",
+   "description": "Define una propiedad de \u00c3\u00a1rea tipo shell.",
    "category": "PropArea",
    "verification_status": "verified"
   },
@@ -1448,11 +1490,75 @@
    "verification_status": "verified"
   },
   {
+   "name": "apply_distributed_load",
+   "aliases": [
+    "apply uniform distributed line load to beams",
+    "assign gravity floor load to frames",
+    "apply member line loading"
+   ]
+  },
+  {
+   "name": "apply_wind_load",
+   "aliases": [
+    "calculate and assign wind pressure",
+    "apply lateral wind line load to frames",
+    "sni 1727 or asce 7 wind loading"
+   ]
+  },
+  {
+   "name": "assign_supports",
+   "aliases": [
+    "assign fixed pinned or roller supports",
+    "ground foundation boundary restraints",
+    "fix base joint degrees of freedom"
+   ]
+  },
+  {
+   "name": "batch_create_frames",
+   "aliases": [
+    "create multiple 3d frames and columns",
+    "batch generate building frame geometry",
+    "create complex irregular framing members"
+   ]
+  },
+  {
    "name": "connect_sap2000",
    "aliases": [
     "attach to a running sap2000",
     "start a structural analysis session",
     "open the com connection"
+   ]
+  },
+  {
+   "name": "define_frame_section",
+   "aliases": [
+    "create wide flange beam or column section",
+    "define hollow structural tube section",
+    "specify cross section dimensions"
+   ]
+  },
+  {
+   "name": "define_load_combination",
+   "aliases": [
+    "create factored design load combination",
+    "define ultimate or serviceability limit state combo",
+    "combine dead live wind and seismic load cases"
+   ]
+  },
+  {
+   "name": "define_material",
+   "aliases": [
+    "define structural steel concrete or rebar material",
+    "material constitutive strength and elasticity",
+    "create material property"
+   ]
+  },
+  {
+   "name": "define_response_spectrum",
+   "aliases": [
+    "generate design response spectrum curve",
+    "indonesian sni 1726 seismic spectrum",
+    "dynamic response spectrum load cases"
    ]
   },
   {
@@ -1471,6 +1577,15 @@
    ]
   },
   {
+   "name": "get_analysis_results",
+   "aliases": [
+    "extract base reactions and base shear",
+    "query joint displacements and story drift",
+    "retrieve natural vibration modal periods",
+    "extract member forces and bending moments"
+   ]
+  },
+  {
    "name": "get_error_hints",
    "aliases": [
     "recovery steps for an api return code",
@@ -1484,6 +1599,14 @@
     "active units and model path",
     "structural model summary",
     "verify session state"
+   ]
+  },
+  {
+   "name": "init_structural_model",
+   "aliases": [
+    "initialize new structural model",
+    "create blank structural database",
+    "setup structural units and canvas"
    ]
   },
   {
@@ -1518,8 +1641,7 @@
    "name": "query_function_registry",
    "aliases": [
     "verified call patterns for an api function",
-    "known pitfalls of a sap2000 function",
-    "has this api function been proven"
+    "known pitfalls of a sap2000 function"
    ]
   },
   {
@@ -1527,6 +1649,30 @@
    "aliases": [
     "record a working api call pattern",
     "add a proven function to the registry"
+   ]
+  },
+  {
+   "name": "run_analysis",
+   "aliases": [
+    "solve the finite element model",
+    "run structural analysis",
+    "execute stiffness matrix solver"
+   ]
+  },
+  {
+   "name": "run_code_design",
+   "aliases": [
+    "run aisc steel design checks",
+    "verify demand to capacity stress ratios",
+    "check building code compliance and safety"
+   ]
+  },
+  {
+   "name": "run_pushover_analysis",
+   "aliases": [
+    "run nonlinear static pushover analysis",
+    "extract capacity curve and base shear",
+    "displacement controlled lateral push and ductility"
    ]
   },
   {
@@ -1538,12 +1684,27 @@
    ]
   },
   {
+   "name": "save_model",
+   "aliases": [
+    "save the structural model to disk",
+    "persist sdb database file",
+    "save active model file"
+   ]
+  },
+  {
    "name": "search_api_docs",
    "aliases": [
     "find the oapi function for an operation",
     "sap2000 api reference lookup",
-    "signature and parameters of an api function",
-    "which api call assigns this"
+    "signature and parameters of an api function"
+   ]
+  },
+  {
+   "name": "set_model_lock",
+   "aliases": [
+    "lock or unlock the structural model",
+    "unlock model to edit geometry",
+    "toggle model lock state"
    ]
   }
  ]

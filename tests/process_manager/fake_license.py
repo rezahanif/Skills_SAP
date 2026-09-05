@@ -66,6 +66,33 @@ def spawn_server(env_extra=None, interpreter=None):
     )
 
 
+def pipe_readable(stream, timeout=0.0):
+    """Check if stream is readable, cross-platform (Windows pipes do not support select.select)."""
+    if stream is None:
+        return False
+    if sys.platform != "win32":
+        ready, _, _ = select.select([stream], [], [], timeout)
+        return bool(ready)
+    import msvcrt
+    import ctypes
+    from ctypes import wintypes
+    kernel32 = ctypes.windll.kernel32
+    try:
+        handle = msvcrt.get_osfhandle(stream.fileno())
+    except Exception:
+        return False
+    avail = wintypes.DWORD()
+    end_time = time.time() + timeout
+    while True:
+        if not kernel32.PeekNamedPipe(handle, None, 0, None, ctypes.byref(avail), None):
+            return False
+        if avail.value > 0:
+            return True
+        if time.time() >= end_time:
+            return False
+        time.sleep(0.01)
+
+
 def _wait_ready(proc, marker=b"starting up", timeout=25.0):
     """Wait until the server logs its readiness marker on stderr, or exits.
 
@@ -74,16 +101,12 @@ def _wait_ready(proc, marker=b"starting up", timeout=25.0):
     on the stderr marker makes spawn deterministic. Fail-closed tests
     (missing/invalid token) exit before the marker — returns False fast.
     """
-    import select
-    import time
-
     deadline = time.time() + timeout
     buf = b""
     while time.time() < deadline:
         if proc.poll() is not None:
             return False
-        ready, _, _ = select.select([proc.stderr], [], [], 0.2)
-        if ready:
+        if pipe_readable(proc.stderr, 0.2):
             chunk = proc.stderr.read(4096)
             if not chunk:
                 break
@@ -113,10 +136,7 @@ def _drain_stdout(proc):
     """Read all currently-available stdout (non-blocking), discarding it."""
     if proc.stdout is None:
         return
-    while True:
-        ready, _, _ = select.select([proc.stdout], [], [], 0)
-        if not ready:
-            break
+    while pipe_readable(proc.stdout, 0.0):
         chunk = proc.stdout.read(4096)
         if not chunk:
             break
@@ -145,8 +165,7 @@ def mcp_initialize(proc, attempts=15, wait=1.0):
         _drain_stdout(proc)
         proc.stdin.write((json.dumps(req) + "\n").encode())
         proc.stdin.flush()
-        ready, _, _ = select.select([proc.stdout], [], [], wait)
-        if ready:
+        if pipe_readable(proc.stdout, wait):
             line = proc.stdout.readline()
             if line:
                 resp = json.loads(line.decode())

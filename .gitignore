@@ -7,3 +7,16 @@ dist/
 # Vendored Windows dependency tree, built by
 # aiconnector/scripts/release/stage-python-vendor.py before packaging. Build artifact.
 _vendor/
+
+# SAP2000 analysis and database files
+*.sdb
+*.sbk
+*.$2k
+*.LOG
+*.OUT
+*.msh
+*.ico
+*.Y*
+*.K*
+*.K_*
+*.Y_*

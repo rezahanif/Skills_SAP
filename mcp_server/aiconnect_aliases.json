@@ -1,67 +1,141 @@
 {
- "_doc": "Authored intent phrasings, merged into aiconnect-capabilities.json by scripts/gen_capabilities.py. The AiConnect gateway folds these into its BM25 search haystack only - never into what the model is shown, and never into the embedding.",
- "_rule": "An alias must not introduce a word that is COMMON in ordinary English but RARE in the corpus. BM25 IDF treats such a word as maximally discriminating, so it becomes a magnet for queries the tool should refuse. Name the OPERATION - not a material, a trade, or any everyday noun. Authored from each tool's own name and description only, never from the benchmark task prompts.",
- "_why": "Driver: aiconnector/scripts/bundle-benchmark/alias_ab.py (BUNDLE_BENCH_TARGET=sap2000).",
- "aliases": {
-  "connect_sap2000": [
-   "attach to a running sap2000",
-   "start a structural analysis session",
-   "open the com connection"
-  ],
-  "disconnect_sap2000": [
-   "release the com resources",
-   "end the sap2000 session"
-  ],
-  "get_model_info": [
-   "frame joint and area counts",
-   "active units and model path",
-   "structural model summary",
-   "verify session state"
-  ],
-  "execute_sap_function": [
-   "call an oapi function by dot path",
-   "invoke a sap2000 api method directly",
-   "single api call against sapmodel"
-  ],
-  "run_sap_script": [
-   "automate sap2000 with python",
-   "sandboxed script against the structural model",
-   "batch of api calls in one run"
-  ],
-  "list_scripts": [
-   "saved script library",
-   "which sap2000 scripts already exist"
-  ],
-  "load_script": [
-   "open a stored script",
-   "retrieve script code from the library"
-  ],
-  "search_api_docs": [
-   "find the oapi function for an operation",
-   "sap2000 api reference lookup",
-   "signature and parameters of an api function",
-   "which api call assigns this"
-  ],
-  "list_api_categories": [
-   "browse oapi documentation categories",
-   "explore the sap2000 api surface"
-  ],
-  "query_function_registry": [
-   "verified call patterns for an api function",
-   "known pitfalls of a sap2000 function",
-   "has this api function been proven"
-  ],
-  "register_verified_function": [
-   "record a working api call pattern",
-   "add a proven function to the registry"
-  ],
-  "list_registry_categories": [
-   "registry coverage per category",
-   "which api areas are explored"
-  ],
-  "get_error_hints": [
-   "recovery steps for an api return code",
-   "what this sap2000 error means"
-  ]
- }
+  "_doc": "Authored intent phrasings, merged into aiconnect-capabilities.json by scripts/gen_capabilities.py.",
+  "_rule": "Name the OPERATION - not a material, a trade, or any everyday noun.",
+  "_why": "Driver: aiconnector/scripts/bundle-benchmark/alias_ab.py",
+  "aliases": {
+    "connect_sap2000": [
+      "attach to a running sap2000",
+      "start a structural analysis session",
+      "open the com connection"
+    ],
+    "disconnect_sap2000": [
+      "release the com resources",
+      "end the sap2000 session"
+    ],
+    "get_model_info": [
+      "frame joint and area counts",
+      "active units and model path",
+      "structural model summary",
+      "verify session state"
+    ],
+    "init_structural_model": [
+      "initialize new structural model",
+      "create blank structural database",
+      "setup structural units and canvas"
+    ],
+    "define_material": [
+      "define structural steel concrete or rebar material",
+      "material constitutive strength and elasticity",
+      "create material property"
+    ],
+    "define_frame_section": [
+      "create wide flange beam or column section",
+      "define hollow structural tube section",
+      "specify cross section dimensions"
+    ],
+    "batch_create_frames": [
+      "create multiple 3d frames and columns",
+      "batch generate building frame geometry",
+      "create complex irregular framing members"
+    ],
+    "assign_supports": [
+      "assign fixed pinned or roller supports",
+      "ground foundation boundary restraints",
+      "fix base joint degrees of freedom"
+    ],
+    "apply_distributed_load": [
+      "apply uniform distributed line load to beams",
+      "assign gravity floor load to frames",
+      "apply member line loading"
+    ],
+    "define_load_combination": [
+      "create factored design load combination",
+      "define ultimate or serviceability limit state combo",
+      "combine dead live wind and seismic load cases"
+    ],
+    "save_model": [
+      "save the structural model to disk",
+      "persist sdb database file",
+      "save active model file"
+    ],
+    "run_analysis": [
+      "solve the finite element model",
+      "run structural analysis",
+      "execute stiffness matrix solver"
+    ],
+    "set_model_lock": [
+      "lock or unlock the structural model",
+      "unlock model to edit geometry",
+      "toggle model lock state"
+    ],
+    "get_analysis_results": [
+      "extract base reactions and base shear",
+      "query joint displacements and story drift",
+      "retrieve natural vibration modal periods",
+      "extract member forces and bending moments"
+    ],
+    "run_code_design": [
+      "run aisc steel design checks",
+      "verify demand to capacity stress ratios",
+      "check building code compliance and safety"
+    ],
+    "apply_wind_load": [
+      "calculate and assign wind pressure",
+      "apply lateral wind line load to frames",
+      "sni 1727 or asce 7 wind loading"
+    ],
+    "define_response_spectrum": [
+      "generate design response spectrum curve",
+      "indonesian sni 1726 seismic spectrum",
+      "dynamic response spectrum load cases"
+    ],
+    "run_pushover_analysis": [
+      "run nonlinear static pushover analysis",
+      "extract capacity curve and base shear",
+      "displacement controlled lateral push and ductility"
+    ],
+    "execute_sap_function": [
+      "call an oapi function by dot path",
+      "invoke a sap2000 api method directly",
+      "single api call against sapmodel"
+    ],
+    "run_sap_script": [
+      "automate sap2000 with python",
+      "sandboxed script against the structural model",
+      "batch of api calls in one run"
+    ],
+    "list_scripts": [
+      "saved script library",
+      "which sap2000 scripts already exist"
+    ],
+    "load_script": [
+      "open a stored script",
+      "retrieve script code from the library"
+    ],
+    "search_api_docs": [
+      "find the oapi function for an operation",
+      "sap2000 api reference lookup",
+      "signature and parameters of an api function"
+    ],
+    "list_api_categories": [
+      "browse oapi documentation categories",
+      "explore the sap2000 api surface"
+    ],
+    "query_function_registry": [
+      "verified call patterns for an api function",
+      "known pitfalls of a sap2000 function"
+    ],
+    "register_verified_function": [
+      "record a working api call pattern",
+      "add a proven function to the registry"
+    ],
+    "list_registry_categories": [
+      "registry coverage per category",
+      "which api areas are explored"
+    ],
+    "get_error_hints": [
+      "recovery steps for an api return code",
+      "what this sap2000 error means"
+    ]
+  }
 }

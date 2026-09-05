@@ -8,7 +8,7 @@ stdout — both with and without the AiConnect adapter enabled.
 import json
 import select
 
-from fake_license import SECRET, mcp_initialize, mint, spawn_server, stop
+from fake_license import SECRET, mcp_initialize, mint, pipe_readable, spawn_server, stop
 
 VALID_CONFIGS = [
     {"name": "plain", "env": {}},
@@ -31,8 +31,7 @@ def _assert_stdout_pure(proc):
     """
     assert proc.stdout is not None
     while True:
-        ready, _, _ = select.select([proc.stdout], [], [], 0.5)
-        if not ready:
+        if not pipe_readable(proc.stdout, 0.5):
             break
         line = proc.stdout.readline()
         if not line:
