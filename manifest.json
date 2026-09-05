@@ -1,7 +1,7 @@
 {
   "id": "sap2000-mcp",
   "name": "SAP2000 Connector",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "manifest_schema_version": 1,
   "package_format_version": 1,
   "platform": {
