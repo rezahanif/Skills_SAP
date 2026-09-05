@@ -753,8 +753,8 @@ class SapBridge:
         failed_count = 0
 
         for f in frames:
-            p1 = f.get("start", [0.0, 0.0, 0.0])
-            p2 = f.get("end", [0.0, 0.0, 1.0])
+            p1 = f.get("start") or f.get("pt1") or f.get("p1") or [0.0, 0.0, 0.0]
+            p2 = f.get("end") or f.get("pt2") or f.get("p2") or [0.0, 0.0, 1.0]
             sec = f.get("section", "Default")
             lbl = str(f.get("label", ""))
 
