@@ -53,7 +53,7 @@ graph LR
 
 | Módulo | Función |
 |--------|---------|
-| `server.py` | Entry point — registro de 12 herramientas MCP |
+| `server.py` | Entry point — registro de 28 herramientas MCP |
 | `sap_bridge.py` | Conexión COM singleton a SAP2000 |
 | `sap_executor.py` | Ejecutor con sandbox (imports restringidos, timeout) |
 | `script_library.py` | Persistencia y búsqueda de scripts |
@@ -115,7 +115,7 @@ los templates y el workflow de scripting.
 **Uso:**
 1. Asegurarse de que SAP2000 esté abierto
 2. Llamar `connect_sap2000` una vez por sesión para establecer el bridge COM
-3. Las 12 herramientas MCP quedan disponibles automáticamente
+3. Las 28 herramientas MCP quedan disponibles automáticamente
 
 ---
 
@@ -236,7 +236,7 @@ Categorías cubiertas:
 ```
 Skills_SAP/
 ├── mcp_server/              # Servidor MCP (Python)
-│   ├── server.py            #   Entry point — 12 herramientas MCP
+│   ├── server.py            #   Entry point — 28 herramientas MCP
 │   ├── sap_bridge.py        #   Conexión COM singleton
 │   ├── sap_executor.py      #   Sandbox de ejecución
 │   ├── script_library.py    #   Persistencia de scripts
@@ -276,13 +276,28 @@ Skills_SAP/
 
 ## Herramientas MCP Disponibles
 
-El servidor expone 12 herramientas invocables desde Claude Code:
+El servidor expone 28 herramientas invocables desde Claude Code:
 
 | Herramienta | Descripción |
 |-------------|-------------|
 | `connect_sap2000` | Conectar/adjuntar a instancia de SAP2000 |
 | `disconnect_sap2000` | Desconectar del modelo activo |
 | `get_model_info` | Obtener info del modelo (unidades, conteos, archivo) |
+| `save_model` | Guardar el modelo activo en disco (.sdb) |
+| `init_structural_model` | Inicializar un modelo limpio con unidades explícitas |
+| `define_material` | Definir material estructural (acero, concreto, refuerzo) |
+| `define_frame_section` | Definir sección transversal de elemento frame (I, tubo, rectangular, circular) |
+| `batch_create_frames` | Crear múltiples elementos frame con geometría 3D arbitraria en una sola llamada |
+| `assign_supports` | Asignar apoyos (fijo, articulado, rodillo) a nudos de fundación |
+| `apply_distributed_load` | Aplicar cargas lineales distribuidas sobre elementos frame |
+| `apply_wind_load` | Calcular y aplicar cargas de viento según SNI 1727 / ASCE 7 |
+| `define_response_spectrum` | Generar espectro de diseño y casos de carga dinámicos según SNI 1726 / ASCE 7 |
+| `define_load_combination` | Definir combinaciones de carga con factores |
+| `run_analysis` | Ejecutar el solver de elementos finitos |
+| `run_code_design` | Ejecutar verificación de diseño por código (acero/concreto) y extraer ratios D/C |
+| `run_pushover_analysis` | Ejecutar análisis pushover no lineal y extraer curva de capacidad |
+| `set_model_lock` | Bloquear/desbloquear el modelo (limpia resultados para permitir edición) |
+| `get_analysis_results` | Extraer resultados estructurados (reacciones, desplazamientos, modal, fuerzas) |
 | `execute_sap_function` | Ejecutar una función API individual |
 | `run_sap_script` | Ejecutar un script completo en sandbox |
 | `list_scripts` | Listar scripts guardados |
@@ -292,6 +307,7 @@ El servidor expone 12 herramientas invocables desde Claude Code:
 | `query_function_registry` | Consultar funciones verificadas |
 | `register_verified_function` | Registrar nueva función verificada |
 | `list_registry_categories` | Listar categorías del registry |
+| `get_error_hints` | Obtener sugerencias de recuperación para un código de error |
 
 ---
 
@@ -316,9 +332,9 @@ Este proyecto está bajo la licencia MIT. Ver [LICENSE](LICENSE) para más detal
 
 This fork adds an AiConnect adapter without modifying upstream tool logic:
 
-- `mcp_server/aioconnect.py` — license gate (`ensure_licensed()` at startup + per-call recheck via `MCP_LICENSE_TOKEN`) and a central envelope wrap of all 12 registered tools (`{"success": true, "data": ...}` / `fail("LICENSE"|"TOOL_ERROR", ...)`). Enabled only when `AICONNECT_ENABLE=1`; otherwise the server runs as plain upstream.
+- `mcp_server/aioconnect.py` — license gate (`ensure_licensed()` at startup + per-call recheck via `MCP_LICENSE_TOKEN`) and a central envelope wrap of all 28 registered tools (`{"success": true, "data": ...}` / `fail("LICENSE"|"TOOL_ERROR", ...)`). Enabled only when `AICONNECT_ENABLE=1`; otherwise the server runs as plain upstream.
 - `run_server.py` — entrypoint for the gateway bridge (`--cmd python3 run_server.py`); keeps `python -m mcp_server.server` working unchanged.
-- `manifest.json` — AiConnect manifest: `stdio: true`, `entitlement_tier: pro`, token via `MCP_LICENSE_TOKEN`, platform requirements (`windows` + `com`).
+- `manifest.json` — AiConnect manifest: `stdio: true`, `entitlement_tier: free`, token via `MCP_LICENSE_TOKEN`, platform requirements (`windows` + `com`).
 - COM is imported lazily (`sap_bridge.py`) so the server starts headless on any platform — `tools/list`, `query_function_registry`, `run_sap_script` sandbox, `doc_search` all work; only `connect_sap2000` needs real SAP2000 + COM and returns a structured `TOOL_ERROR` envelope off-Windows.
 
 Upstream: https://github.com/fcocarrascob/Skills_SAP (commit `a882a15`), MIT license preserved verbatim (`LICENSE`).

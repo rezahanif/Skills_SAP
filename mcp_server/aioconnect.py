@@ -1,11 +1,11 @@
-"""AiConnect adapter for the SAP2000 MCP fork (integration layer — the 12
+"""AiConnect adapter for the SAP2000 MCP fork (integration layer — the 28
 upstream tools are NOT modified).
 
 Reuses the shared Python SDK (connectors/sdk/python):
   1. License gate — startup + per-call check of the token the Process Manager
      injects via MCP_LICENSE_TOKEN (manifest token_env_var).
   2. Response envelope — every registered tool's return is wrapped centrally
-     at registration time (ok/fail), so none of the 12 tools need per-tool edits.
+     at registration time (ok/fail), so none of the 28 tools need per-tool edits.
 
 Env-gated integration points:
   AICONNECT_ENABLE=1        — install the license gate + envelope wrap

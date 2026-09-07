@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.1] - 2026-09-07
+
+### Fixed
+- README.md: corrected stale tool count (12 → 28) across 4 mentions, expanded the
+  tools table to list all 28 registered MCP tools, and corrected `entitlement_tier`
+  documentation (pro → free) to match `manifest.json`.
+- `mcp_server/aioconnect.py`: updated docstring comments referencing "12 tools" to
+  the current count of 28. Comment-only change, no behavior difference.
+
 ## [1.0.0] - 2026-08-24
 
 ### Added
