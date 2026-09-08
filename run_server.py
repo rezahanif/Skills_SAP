@@ -23,7 +23,14 @@ sys.path.insert(0, str(_ROOT))
 # override. Missing directory is not an error: a dev checkout has none.
 _VENDOR = _ROOT / "_vendor"
 if _VENDOR.is_dir():
-    sys.path.append(str(_VENDOR))
+    # site.addsitedir (not a plain sys.path.append) so pywin32's own
+    # pywin32.pth gets processed -- pywintypes/win32com live under
+    # _vendor/win32/lib, which nothing puts on sys.path otherwise.
+    import site
+
+    site.addsitedir(str(_VENDOR))
+    if str(_VENDOR) not in sys.path:
+        sys.path.append(str(_VENDOR))
 
 from mcp_server.server import mcp  # noqa: E402
 
